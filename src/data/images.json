@@ -1,0 +1,372 @@
+{
+  "mohenjo-daro": {
+    "src": "/images/mohenjo-daro.jpg",
+    "width": 1280,
+    "height": 960,
+    "title": "Mohenjo-daro.jpg",
+    "artist": "Saqib Qayyum",
+    "license": "CC BY-SA 3.0",
+    "sourceUrl": "https://commons.wikimedia.org/wiki/File:Mohenjo-daro.jpg",
+    "description": "Excavated ruins of Mohenjo-daro, with the Great Bath in the foreground and the granary mound in the background"
+  },
+  "great-bath": {
+    "src": "/images/great-bath.jpg",
+    "width": 1280,
+    "height": 960,
+    "title": "Great bath view Mohenjodaro.JPG",
+    "artist": "Saqib Qayyum",
+    "license": "CC BY-SA 3.0",
+    "sourceUrl": "https://commons.wikimedia.org/wiki/File:Great_bath_view_Mohenjodaro.JPG",
+    "description": "The Great Bath. A 2.4m deep, 12m long, and 7m wide pool known as \"The Great Bath\" is located at the centre of the Citadel, is made of fine baked waterproof mud bricks and a thick layer of bitumen (natural tar – presumably to keep water from"
+  },
+  "dholavira": {
+    "src": "/images/dholavira.jpg",
+    "width": 1280,
+    "height": 720,
+    "title": "Water storage tanks at Dholavira Citadel.jpg",
+    "artist": "Prof Ranga Sai",
+    "license": "CC BY-SA 4.0",
+    "sourceUrl": "https://commons.wikimedia.org/wiki/File:Water_storage_tanks_at_Dholavira_Citadel.jpg",
+    "description": "Water storage tanks with steps to collect water. The main purpose of these storage tanks was to control, integrate and let off the surface runoff during monsoon season At Dholavira, the citadel had an intricate network of storm water drains"
+  },
+  "dholavira-drain": {
+    "src": "/images/dholavira-drain.jpg",
+    "width": 1280,
+    "height": 2276,
+    "title": "Manholes at Dholavira water management network.jpg",
+    "artist": "Prof Ranga Sai",
+    "license": "CC BY-SA 4.0",
+    "sourceUrl": "https://commons.wikimedia.org/wiki/File:Manholes_at_Dholavira_water_management_network.jpg",
+    "description": "Manholes at Dholavira water management network. The main purpose of these manholes was to control, integrate and let off the surface runoff during monsoon season. Manholes were also found with capstone. At Dholavira, the citadel had an intr"
+  },
+  "bhimbetka": {
+    "src": "/images/bhimbetka.jpg",
+    "width": 1280,
+    "height": 853,
+    "title": "Rock painting, Bhimbetka, Raisen district, MP.jpg",
+    "artist": "Yann (talk)",
+    "license": "CC BY-SA 4.0",
+    "sourceUrl": "https://commons.wikimedia.org/wiki/File:Rock_painting,_Bhimbetka,_Raisen_district,_MP.jpg",
+    "description": "Mesolithic Rock painting, Bhimbetka, Raisen district, Madhya Pradesh, India."
+  },
+  "bhimbetka-shelter": {
+    "src": "/images/bhimbetka-shelter.jpg",
+    "width": 1280,
+    "height": 853,
+    "title": "Rock Shelter 8, Bhimbetka 02.jpg",
+    "artist": "Bernard Gagnon",
+    "license": "CC BY-SA 3.0",
+    "sourceUrl": "https://commons.wikimedia.org/wiki/File:Rock_Shelter_8,_Bhimbetka_02.jpg",
+    "description": "Paintings in Rock Shelter 8, Bhimbetka, India"
+  },
+  "mehrgarh": {
+    "src": "/images/mehrgarh.jpg",
+    "width": 1280,
+    "height": 837,
+    "title": "Mehrgarh ruins.jpg",
+    "artist": "Ashish_Premier",
+    "license": "CC BY-SA 3.0",
+    "sourceUrl": "https://commons.wikimedia.org/wiki/File:Mehrgarh_ruins.jpg",
+    "description": "Mehrgarh ruins. Dated to 5500 BC per Dikshit, K.N. (2013) Origin of Early Harappan Cultures in the Sarasvati Valley: Recent Archaeological Evidence and Radiometric Dates, p. 104. Archived from the original on 18 January 2017."
+  },
+  "sanchi": {
+    "src": "/images/sanchi.jpg",
+    "width": 1280,
+    "height": 853,
+    "title": "Stupa 1, Sanchi 02.jpg",
+    "artist": "Bernard Gagnon",
+    "license": "CC BY-SA 3.0",
+    "sourceUrl": "https://commons.wikimedia.org/wiki/File:Stupa_1,_Sanchi_02.jpg",
+    "description": "West torana, Stupa 1, Sanchi, India"
+  },
+  "girnar": {
+    "src": "/images/girnar.jpg",
+    "width": 1280,
+    "height": 960,
+    "title": "Ashoka's Major Rock Edict, Girnar Gujarat 001.jpg",
+    "artist": "Snehrashmi",
+    "license": "CC BY-SA 4.0",
+    "sourceUrl": "https://commons.wikimedia.org/wiki/File:Ashoka%27s_Major_Rock_Edict,_Girnar_Gujarat_001.jpg",
+    "description": "Ashokan Rock Edicts, Girnar, Junagadh"
+  },
+  "lothal": {
+    "src": "/images/lothal.jpg",
+    "width": 1280,
+    "height": 756,
+    "title": "Lothal Dockyard N-GJ-60.jpg",
+    "artist": "Jashjashjash",
+    "license": "CC BY-SA 4.0",
+    "sourceUrl": "https://commons.wikimedia.org/wiki/File:Lothal_Dockyard_N-GJ-60.jpg",
+    "description": "Dockyard in Lothal. Indus valley Civilization township"
+  },
+  "nalanda": {
+    "src": "/images/nalanda.jpg",
+    "width": 1280,
+    "height": 853,
+    "title": "Temple 3 - Sariputta Stupa - Nalanda Mahavihara (10).jpg",
+    "artist": "Sumitsurai",
+    "license": "CC BY-SA 4.0",
+    "sourceUrl": "https://commons.wikimedia.org/wiki/File:Temple_3_-_Sariputta_Stupa_-_Nalanda_Mahavihara_(10).jpg",
+    "description": "Temple 3 or the Sariputta Stupa. Ruins of Nalanda Mahavihara"
+  },
+  "harappa": {
+    "src": "/images/harappa.jpg",
+    "width": 1280,
+    "height": 720,
+    "title": "Harappa Ruins - IV.jpg",
+    "artist": "Hassan Nasir",
+    "license": "CC BY-SA 3.0",
+    "sourceUrl": "https://commons.wikimedia.org/wiki/File:Harappa_Ruins_-_IV.jpg",
+    "description": "This is a photo of a monument in Pakistan identified as the"
+  },
+  "unicorn-seal": {
+    "src": "/images/unicorn-seal.jpg",
+    "width": 1280,
+    "height": 720,
+    "title": "Indus civilisation seal unicorn at Indian Museum, Kolkata.jpg",
+    "artist": "Royroydeb",
+    "license": "CC BY-SA 4.0",
+    "sourceUrl": "https://commons.wikimedia.org/wiki/File:Indus_civilisation_seal_unicorn_at_Indian_Museum,_Kolkata.jpg",
+    "description": "Indus seal unicorn at Indian Museum"
+  },
+  "kalibangan": {
+    "src": "/images/kalibangan.jpg",
+    "width": 1280,
+    "height": 960,
+    "title": "Westernmound.jpg",
+    "artist": "Kk himalaya",
+    "license": "Public domain",
+    "sourceUrl": "https://commons.wikimedia.org/wiki/File:Westernmound.jpg",
+    "description": "Western mound known as Citadel can be seen here in the ruins of Kalibanga."
+  },
+  "rakhigarhi": {
+    "src": "/images/rakhigarhi.jpg",
+    "width": 1280,
+    "height": 2269,
+    "title": "Harappan Burial Remains from Rakhigarhi.jpg",
+    "artist": "Aadrit28",
+    "license": "CC BY-SA 4.0",
+    "sourceUrl": "https://commons.wikimedia.org/wiki/File:Harappan_Burial_Remains_from_Rakhigarhi.jpg",
+    "description": "Harappan Burial Remains from Rakhigarhi. This is one of the best preserved burials of a middle-aged female. Extended in north-south direction, the head is titled slightly towards the west. The estimated height is 165 cm. There are a couple "
+  },
+  "sirkap": {
+    "src": "/images/sirkap.jpg",
+    "width": 1280,
+    "height": 731,
+    "title": "Double-Headed Eagle Stupa at Sirkap 04.jpg",
+    "artist": "Furqanlw",
+    "license": "CC BY-SA 4.0",
+    "sourceUrl": "https://commons.wikimedia.org/wiki/File:Double-Headed_Eagle_Stupa_at_Sirkap_04.jpg",
+    "description": "This is a photo of a monument in Pakistan identified as the"
+  },
+  "arikamedu": {
+    "src": "/images/arikamedu.jpg",
+    "width": 1280,
+    "height": 853,
+    "title": "Arikamedu, Early Historic Site 03.jpg",
+    "artist": "Jayaseerlourdhuraj",
+    "license": "CC BY-SA 3.0",
+    "sourceUrl": "https://commons.wikimedia.org/wiki/File:Arikamedu,_Early_Historic_Site_03.jpg",
+    "description": "This is a photo of ASI monument number"
+  },
+  "keeladi": {
+    "src": "/images/keeladi.jpg",
+    "width": 1280,
+    "height": 960,
+    "title": "Keezhadi Excavation 1.jpg",
+    "artist": "Sundar",
+    "license": "CC BY-SA 3.0",
+    "sourceUrl": "https://commons.wikimedia.org/wiki/File:Keezhadi_Excavation_1.jpg",
+    "description": "Artefacts from Keezhadi Tamil Civilization"
+  },
+  "amaravati": {
+    "src": "/images/amaravati.jpg",
+    "width": 1280,
+    "height": 1630,
+    "title": "AmaravatiFrieze.jpg",
+    "artist": "PHGCOM",
+    "license": "CC BY-SA 3.0",
+    "sourceUrl": "https://commons.wikimedia.org/wiki/File:AmaravatiFrieze.jpg",
+    "description": "Frieze from Amaravati depicting the Amaravati stupa."
+  },
+  "lion-capital": {
+    "src": "/images/lion-capital.jpg",
+    "width": 1280,
+    "height": 960,
+    "title": "Lion Capital of Ashoka 3.jpg",
+    "artist": "Apurv013",
+    "license": "CC0",
+    "sourceUrl": "https://commons.wikimedia.org/wiki/File:Lion_Capital_of_Ashoka_3.jpg",
+    "description": "State emblem of India"
+  },
+  "mahabodhi": {
+    "src": "/images/mahabodhi.jpg",
+    "width": 1280,
+    "height": 865,
+    "title": "Mahabodhi Temple South Wall (2).jpg",
+    "artist": "Sumitsurai",
+    "license": "CC BY-SA 4.0",
+    "sourceUrl": "https://commons.wikimedia.org/wiki/File:Mahabodhi_Temple_South_Wall_(2).jpg",
+    "description": "Mahabodhi Temple Complex - Bodh Gaya - Bihar"
+  },
+  "girnar-estampage": {
+    "src": "/images/girnar-estampage.jpg",
+    "width": 1280,
+    "height": 327,
+    "title": "Girnar Major Rock Edict No5.jpg",
+    "artist": "Alexander Cunningham, Eugen Hultzsch Date=1877",
+    "license": "Public domain",
+    "sourceUrl": "https://commons.wikimedia.org/wiki/File:Girnar_Major_Rock_Edict_No5.jpg",
+    "description": "Girnar Major Rock Edict No5"
+  },
+  "priest-king": {
+    "src": "/images/priest-king.jpg",
+    "width": 1280,
+    "height": 1653,
+    "title": "Mohenjo-daro Priesterkönig.jpeg",
+    "artist": "Mamoon Mengal",
+    "license": "CC BY-SA 1.0",
+    "sourceUrl": "https://commons.wikimedia.org/wiki/File:Mohenjo-daro_Priesterk%C3%B6nig.jpeg",
+    "description": "Indus Priest/King Statue. The statue is 17.5 cm high and carved from steatite a.k.a. soapstone. It was found in Mohenjo-daro in 1927. It is on display in the National Museum, Karachi, Pakistan."
+  },
+  "dancing-girl": {
+    "src": "/images/dancing-girl.jpg",
+    "width": 1280,
+    "height": 1920,
+    "title": "Bronze \"Dancing Girl,\" Mohenjo-daro, c. 2500 BC.jpg",
+    "artist": "Gary Todd",
+    "license": "CC0",
+    "sourceUrl": "https://commons.wikimedia.org/wiki/File:Bronze_%22Dancing_Girl,%22_Mohenjo-daro,_c._2500_BC.jpg",
+    "description": "Bronze \"Dancing Girl,\" Mohenjo-daro, c. 2500 BC. Harappan (Indus Valley) Civilization Gallery, India National Museum, New Delhi. Complete indexed photo collection at WorldHistoryPics.com."
+  },
+  "tamil-brahmi": {
+    "src": "/images/tamil-brahmi.jpg",
+    "width": 1280,
+    "height": 1653,
+    "title": "Mangulam Tamil Brahmi.jpg",
+    "artist": "Mahalakshmi.S",
+    "license": "CC BY-SA 4.0",
+    "sourceUrl": "https://commons.wikimedia.org/wiki/File:Mangulam_Tamil_Brahmi.jpg",
+    "description": "Mangulam Tamil Brahmi"
+  },
+  "ajanta": {
+    "src": "/images/ajanta.jpg",
+    "width": 1280,
+    "height": 293,
+    "title": "Ajanta caves panorama 2010.jpg",
+    "artist": "Marcin Białek",
+    "license": "CC BY-SA 4.0",
+    "sourceUrl": "https://commons.wikimedia.org/wiki/File:Ajanta_caves_panorama_2010.jpg",
+    "description": "Ajanta Caves, India."
+  },
+  "kanishka-coin": {
+    "src": "/images/kanishka-coin.jpg",
+    "width": 1280,
+    "height": 2343,
+    "title": "Coins of Indo-Greeks and Indians (1916) (14782800622).jpg",
+    "artist": "Internet Archive Book Images",
+    "license": "No restrictions",
+    "sourceUrl": "https://commons.wikimedia.org/wiki/File:Coins_of_Indo-Greeks_and_Indians_(1916)_(14782800622).jpg",
+    "description": "INDO-GREEK AND INDIAN COINS 1. Gold double daric, struck in the Panjab in the time of the Persian occupation. Probably belongs to Darius Codomannus, 337 BC. (Rapson, Indian Coins, 1. 5.) 2. Athenian owl, probably struck in India in imitatio"
+  },
+  "gupta-coin": {
+    "src": "/images/gupta-coin.jpg",
+    "width": 1280,
+    "height": 622,
+    "title": "Gupta Empire, Samudragupta, 335-380 AD, Gold Dinar, 7.9g, Javelin Type.jpg",
+    "artist": "Mitresh66",
+    "license": "CC BY-SA 4.0",
+    "sourceUrl": "https://commons.wikimedia.org/wiki/File:Gupta_Empire,_Samudragupta,_335-380_AD,_Gold_Dinar,_7.9g,_Javelin_Type.jpg",
+    "description": "Gupta Empire, Samudragupta, 335-380 AD, Gold Dinar, 7.90g, Javelin type"
+  },
+  "taxila-dharmarajika": {
+    "src": "/images/taxila-dharmarajika.jpg",
+    "width": 1280,
+    "height": 854,
+    "title": "Dharmarajika stupa & Monastery Taxila.jpg",
+    "artist": "Mhtoori",
+    "license": "CC BY-SA 4.0",
+    "sourceUrl": "https://commons.wikimedia.org/wiki/File:Dharmarajika_stupa_%26_Monastery_Taxila.jpg",
+    "description": "This is a photo of a monument in Pakistan identified as the"
+  },
+  "brahmagiri": {
+    "src": "/images/brahmagiri.jpg",
+    "width": 1280,
+    "height": 853,
+    "title": "Brahmagiri Ashoka rock.jpg",
+    "artist": "Partner",
+    "license": "CC BY-SA 3.0",
+    "sourceUrl": "https://commons.wikimedia.org/wiki/File:Brahmagiri_Ashoka_rock.jpg",
+    "description": "Brahmagiri Ashoka rock"
+  },
+  "adichanallur": {
+    "src": "/images/adichanallur.jpg",
+    "width": 1280,
+    "height": 622,
+    "title": "Adichanallur Urn.jpg",
+    "artist": "Balurbala",
+    "license": "CC BY-SA 4.0",
+    "sourceUrl": "https://commons.wikimedia.org/wiki/File:Adichanallur_Urn.jpg",
+    "description": "Urns in Adichanallur archaeological site"
+  },
+  "atranjikhera": {
+    "src": "/images/atranjikhera.png",
+    "width": 1280,
+    "height": 1090,
+    "title": "Painted Grey Ware sites map 1.png",
+    "artist": "Merikanto",
+    "license": "CC BY 4.0",
+    "sourceUrl": "https://commons.wikimedia.org/wiki/File:Painted_Grey_Ware_sites_map_1.png",
+    "description": "Some pained grey ware sites ca. 1100-800 bc on map. Also earlier Late Harappan, Cemetery H, Ochre coloyured pottery and Copper Hoard sites"
+  },
+  "mahasthangarh": {
+    "src": "/images/mahasthangarh.jpg",
+    "width": 1280,
+    "height": 960,
+    "title": "BD Mahasthangarh1 without people.jpg",
+    "artist": "Picture taken by P.K.Niyogi, people removed by GreenComputer",
+    "license": "CC0",
+    "sourceUrl": "https://commons.wikimedia.org/wiki/File:BD_Mahasthangarh1_without_people.jpg",
+    "description": "The ramparts of Mahasthangarh"
+  },
+  "anuradhapura": {
+    "src": "/images/anuradhapura.jpg",
+    "width": 1280,
+    "height": 1912,
+    "title": "Ruwanwelisaya Stupa Anuradhapura.jpg",
+    "artist": "Philip Nalangan",
+    "license": "CC BY 4.0",
+    "sourceUrl": "https://commons.wikimedia.org/wiki/File:Ruwanwelisaya_Stupa_Anuradhapura.jpg",
+    "description": "Ruwanwelisaya Stupa in Anuradhapura, Sri Lanka, dates back to 140 BC."
+  },
+  "lumbini": {
+    "src": "/images/lumbini.jpg",
+    "width": 1280,
+    "height": 1067,
+    "title": "Lumbini Ashoka pillar Other inscriptions.jpg",
+    "artist": "Shadow Ayush",
+    "license": "CC BY-SA 4.0",
+    "sourceUrl": "https://commons.wikimedia.org/wiki/File:Lumbini_Ashoka_pillar_Other_inscriptions.jpg",
+    "description": "Lumbini Ashoka pillar Other inscriptions"
+  },
+  "hampi": {
+    "src": "/images/hampi.jpg",
+    "width": 1280,
+    "height": 853,
+    "title": "Iconic Stone Chariot @ Vittala Temple, Hampi, Karnataka.jpg",
+    "artist": "Ram Nagesh Thota",
+    "license": "CC BY-SA 4.0",
+    "sourceUrl": "https://commons.wikimedia.org/wiki/File:Iconic_Stone_Chariot_@_Vittala_Temple,_Hampi,_Karnataka.jpg",
+    "description": ""
+  },
+  "roman-coin-india": {
+    "src": "/images/roman-coin-india.jpg",
+    "width": 1280,
+    "height": 449,
+    "title": "Silver denarius of Tiberius 14CE 37CE found in India Indian copy of a the same 1st century CE Coin of Kushan king Kujula Kadphises copying a coin of Augustus.jpg",
+    "artist": "Uploadalt",
+    "license": "CC BY-SA 3.0",
+    "sourceUrl": "https://commons.wikimedia.org/wiki/File:Silver_denarius_of_Tiberius_14CE_37CE_found_in_India_Indian_copy_of_a_the_same_1st_century_CE_Coin_of_Kushan_king_Kujula_Kadphises_copying_a_coin_of_Augustus.jpg",
+    "description": "Silver denarius of Tiberius (14–37 CE) found in India. Indian copy of the same, 1st century CE. Coin of Kushan king Kujula Kadphises copying a coin of Augustus."
+  }
+}

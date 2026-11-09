@@ -1,26 +1,270 @@
 @import "tailwindcss";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
+/*
+ * INDOPHILE — design tokens
+ * Parchment and marble grounds, charcoal ink, terracotta and sage as the two
+ * earth accents (fired clay and river-valley green), antique gold used sparingly
+ * for rules and highlights.
+ */
+@theme static {
+  --color-parchment: #f3efe6;
+  --color-ivory: #faf8f2;
+  --color-marble: #f6f4ef;
+  --color-ink: #24231f;
+  --color-stone: #77736a;
+  --color-stone-light: #a7a296;
+  --color-terracotta: #a65d43;
+  --color-terracotta-deep: #87452f;
+  --color-sage: #7f8d6e;
+  --color-sage-deep: #4e5b45;
+  --color-sage-pale: #dfe3d4;
+  --color-gold: #b49a65;
+  --color-night: #20211f;
+  --color-night-soft: #2c2d2a;
+  --color-rule: rgb(36 35 31 / 0.14);
+
+  --font-display: var(--font-cormorant), "Cormorant Garamond", Georgia, serif;
+  --font-sans: var(--font-inter), Inter, system-ui, sans-serif;
+  --font-mono: var(--font-plex-mono), "IBM Plex Mono", ui-monospace, monospace;
+
+  --text-display: clamp(3rem, 7.5vw, 7.25rem);
+  --text-h1: clamp(2.5rem, 5vw, 4.5rem);
+  --text-h2: clamp(1.9rem, 3.2vw, 3rem);
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+html {
+  scroll-behavior: smooth;
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  overflow-x: clip;
+  background: var(--color-parchment);
+  color: var(--color-ink);
+  font-family: var(--font-sans);
+  font-feature-settings: "ss01", "cv11";
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
 }
+
+::selection {
+  background: color-mix(in srgb, var(--color-terracotta) 25%, transparent);
+}
+
+:focus-visible {
+  outline: 2px solid var(--color-terracotta);
+  outline-offset: 3px;
+  border-radius: 2px;
+}
+
+/* ——— Typographic primitives */
+.font-display { font-family: var(--font-display); }
+.font-mono { font-family: var(--font-mono); }
+
+.display {
+  font-family: var(--font-display);
+  font-weight: 500;
+  font-size: var(--text-display);
+  line-height: 0.95;
+  letter-spacing: -0.02em;
+}
+.h1 {
+  font-family: var(--font-display);
+  font-weight: 500;
+  font-size: var(--text-h1);
+  line-height: 1;
+  letter-spacing: -0.015em;
+}
+.h2 {
+  font-family: var(--font-display);
+  font-weight: 500;
+  font-size: var(--text-h2);
+  line-height: 1.05;
+  letter-spacing: -0.01em;
+}
+.h3 {
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: 1.6rem;
+  line-height: 1.15;
+}
+.eyebrow {
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--color-stone);
+}
+.rubric {
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--color-terracotta);
+}
+.lede {
+  font-family: var(--font-display);
+  font-size: clamp(1.3rem, 2vw, 1.65rem);
+  line-height: 1.35;
+  color: var(--color-ink);
+}
+.data {
+  font-family: var(--font-mono);
+  font-size: 0.78rem;
+  letter-spacing: 0.02em;
+}
+
+/* Long-form reading */
+.prose-ind {
+  font-size: 1.075rem;
+  line-height: 1.75;
+  color: #34322c;
+}
+.prose-ind p + p { margin-top: 1.1em; }
+.prose-ind .dropcap::first-letter {
+  float: left;
+  font-family: var(--font-display);
+  font-size: 4.6em;
+  line-height: 0.82;
+  padding: 0.06em 0.12em 0 0;
+  color: var(--color-terracotta);
+}
+
+/* ——— Structural */
+.container-ind {
+  width: 100%;
+  max-width: 1360px;
+  margin-inline: auto;
+  padding-inline: clamp(1rem, 4vw, 3rem);
+}
+.rule { border-color: var(--color-rule); }
+.hairline { height: 1px; background: var(--color-rule); }
+
+.link-ind {
+  background-image: linear-gradient(currentColor, currentColor);
+  background-size: 0% 1px;
+  background-position: 0 100%;
+  background-repeat: no-repeat;
+  transition: background-size 0.35s ease;
+}
+.link-ind:hover { background-size: 100% 1px; }
+
+/* Cards lift by tone, not shadow */
+.card-ind {
+  background: var(--color-ivory);
+  border: 1px solid var(--color-rule);
+  transition: border-color 0.25s ease, transform 0.35s cubic-bezier(.2,.7,.2,1);
+}
+.card-ind:hover {
+  border-color: color-mix(in srgb, var(--color-terracotta) 45%, transparent);
+}
+
+/* Plates: images framed like museum photographs */
+.plate img {
+  filter: saturate(0.82) contrast(1.02);
+  transition: filter 0.6s ease, transform 1.2s cubic-bezier(.2,.7,.2,1);
+}
+.group:hover .plate img { filter: saturate(1); transform: scale(1.025); }
+
+/* Subtle paper grain for parchment sections */
+.grain {
+  position: relative;
+  isolation: isolate;
+}
+.grain::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  opacity: 0.35;
+  pointer-events: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 0.2 0 0 0 0 0.18 0 0 0 0 0.14 0 0 0 0.06 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+
+/* Horizontal scrollers */
+.scroller {
+  scroll-snap-type: x mandatory;
+  scrollbar-width: thin;
+  scrollbar-color: var(--color-stone-light) transparent;
+}
+.scroller > * { scroll-snap-align: start; }
+
+/* ——— Leaflet theming */
+.leaflet-container {
+  z-index: 0; /* own stacking context so map panes never cover the sticky header */
+  background: #e9e3d4;
+  font-family: var(--font-sans);
+}
+.atlas-tiles { filter: sepia(0.35) saturate(0.55) brightness(1.04) contrast(0.92); }
+.leaflet-control-attribution {
+  background: rgb(250 248 242 / 0.85) !important;
+  font-size: 10px !important;
+  color: var(--color-stone) !important;
+}
+.leaflet-control-attribution a { color: var(--color-sage-deep) !important; }
+.leaflet-bar a {
+  background: var(--color-ivory) !important;
+  color: var(--color-ink) !important;
+  border-color: var(--color-rule) !important;
+}
+.leaflet-tooltip.ind-tip {
+  background: var(--color-night);
+  color: var(--color-ivory);
+  border: 0;
+  border-radius: 2px;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 0.02em;
+  padding: 4px 8px;
+  box-shadow: none;
+}
+.leaflet-tooltip.ind-tip::before { display: none; }
+.ind-label {
+  font-family: var(--font-display);
+  font-style: italic;
+  font-size: 15px;
+  color: var(--color-terracotta-deep);
+  white-space: nowrap;
+  text-shadow: 0 0 3px #f3efe6, 0 0 6px #f3efe6;
+}
+
+/* Range input for the time slider */
+input[type="range"].time {
+  -webkit-appearance: none;
+  appearance: none;
+  background: transparent;
+  width: 100%;
+}
+input[type="range"].time::-webkit-slider-runnable-track {
+  height: 2px;
+  background: var(--color-stone-light);
+}
+input[type="range"].time::-moz-range-track { height: 2px; background: var(--color-stone-light); }
+input[type="range"].time::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 18px;
+  height: 18px;
+  margin-top: -8px;
+  border-radius: 50%;
+  background: var(--color-terracotta);
+  border: 3px solid var(--color-ivory);
+  box-shadow: 0 0 0 1px var(--color-terracotta);
+  cursor: grab;
+}
+input[type="range"].time::-moz-range-thumb {
+  width: 14px; height: 14px; border-radius: 50%;
+  background: var(--color-terracotta);
+  border: 3px solid var(--color-ivory);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation: none !important; transition: none !important; scroll-behavior: auto !important; }
+}
+
+@keyframes rise {
+  from { opacity: 0; transform: translateY(14px); }
+  to { opacity: 1; transform: none; }
+}
+.rise { animation: rise 0.9s cubic-bezier(.2,.7,.2,1) both; }
+.rise-2 { animation-delay: 0.12s; }
+.rise-3 { animation-delay: 0.24s; }
+.rise-4 { animation-delay: 0.36s; }
