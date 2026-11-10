@@ -170,4 +170,16 @@ export const sources: Source[] = [
   { id: "unesco-241", kind: "unesco", authors: "UNESCO World Heritage Centre", year: 1986, title: "Group of Monuments at Hampi (List no. 241)", url: "https://whc.unesco.org/en/list/241", verified: true },
   { id: "unesco-1056", kind: "unesco", authors: "UNESCO World Heritage Centre", year: 2002, title: "Mahabodhi Temple Complex at Bodh Gaya (List no. 1056)", url: "https://whc.unesco.org/en/list/1056", verified: true },
   { id: "unesco-666", kind: "unesco", authors: "UNESCO World Heritage Centre", year: 1997, title: "Lumbini, the Birthplace of the Lord Buddha (List no. 666)", url: "https://whc.unesco.org/en/list/666", verified: true },
+  // World Heritage records added in the atlas expansion. The UNESCO site could not be fetched to confirm them, so they are unverified.
+  { id: "unesco-208", kind: "unesco", authors: "UNESCO World Heritage Centre", year: 2003, title: "Cultural Landscape and Archaeological Remains of the Bamiyan Valley (List no. 208)", url: "https://whc.unesco.org/en/list/208", verified: false },
+  { id: "unesco-211", kind: "unesco", authors: "UNESCO World Heritage Centre", year: 2002, title: "Minaret and Archaeological Remains of Jam (List no. 211)", url: "https://whc.unesco.org/en/list/211", verified: false },
+  { id: "unesco-244", kind: "unesco", authors: "UNESCO World Heritage Centre", year: 1987, title: "Elephanta Caves (List no. 244)", url: "https://whc.unesco.org/en/list/244", verified: false },
+  { id: "unesco-561", kind: "unesco", authors: "UNESCO World Heritage Centre", year: 1991, title: "Rangiri Dambulla Cave Temple (List no. 561)", url: "https://whc.unesco.org/en/list/561", verified: false },
+  { id: "unesco-1101", kind: "unesco", authors: "UNESCO World Heritage Centre", year: 2004, title: "Champaner-Pavagadh Archaeological Park (List no. 1101)", url: "https://whc.unesco.org/en/list/1101", verified: false },
+  { id: "unesco-171", kind: "unesco", authors: "UNESCO World Heritage Centre", year: 1981, title: "Fort and Shalamar Gardens in Lahore (List no. 171)", url: "https://whc.unesco.org/en/list/171", verified: false },
+  { id: "unesco-586", kind: "unesco", authors: "UNESCO World Heritage Centre", year: 1997, title: "Rohtas Fort (List no. 586)", url: "https://whc.unesco.org/en/list/586", verified: false },
+  { id: "unesco-251", kind: "unesco", authors: "UNESCO World Heritage Centre", year: 1983, title: "Agra Fort (List no. 251)", url: "https://whc.unesco.org/en/list/251", verified: false },
+  { id: "unesco-231", kind: "unesco", authors: "UNESCO World Heritage Centre", year: 2007, title: "Red Fort Complex (List no. 231)", url: "https://whc.unesco.org/en/list/231", verified: false },
+  { id: "unesco-247", kind: "unesco", authors: "UNESCO World Heritage Centre", year: 2013, title: "Hill Forts of Rajasthan (List no. 247)", url: "https://whc.unesco.org/en/list/247", verified: false },
+  { id: "unesco-451", kind: "unesco", authors: "UNESCO World Heritage Centre", year: 1988, title: "Old Town of Galle and its Fortifications (List no. 451)", url: "https://whc.unesco.org/en/list/451", verified: false },
 ];

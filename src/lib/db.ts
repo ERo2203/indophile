@@ -8,6 +8,9 @@ import { periods } from "@/data/periods";
 import { polities as basePolities } from "@/data/polities";
 import { dynasties, EXTRA_ANCHORS, POLITY_REGION } from "@/data/dynasties";
 import { moreDynasties, MALDIVES, MORE_ANCHORS } from "@/data/dynasties-more";
+import { atlasDynasties } from "@/data/dynasties-atlas";
+import { monumentSites } from "@/data/monuments";
+import { moreRoutes } from "@/data/routes-more";
 import { extraSites, extraCultures, extraConcepts, extraRoutes, extraEvents } from "@/data/sites-extra";
 import { religiousSites, hotspotSites, attestationSites, TRADITIONS, HOTSPOT_IDS } from "@/data/themes";
 import { fossilSites, deepEvents } from "@/data/deep-time";
@@ -22,7 +25,7 @@ import { sources } from "@/data/sources";
 import imageRegistry from "@/data/images.json";
 
 // Merge inline anchors into polities defined elsewhere, so one envelope covers both.
-const polities = [...basePolities, ...extraCultures, ...dynasties, ...moreDynasties, ...MALDIVES].map((p) => {
+const polities = [...basePolities, ...extraCultures, ...dynasties, ...moreDynasties, ...atlasDynasties, ...MALDIVES].map((p) => {
   const more = MORE_ANCHORS[p.id] ?? [];
   const extra0 = EXTRA_ANCHORS[p.id];
   const extra = extra0 || more.length ? { region: extra0?.region ?? POLITY_REGION[p.id] ?? "", radius: extra0?.radius, anchors: [...(extra0?.anchors ?? []), ...more] } : undefined;
@@ -46,7 +49,7 @@ export function regionOf(polityId: string): string | undefined {
 }
 
 // Tag existing sites with religious traditions and hotspot status.
-const sites = [...baseSites, ...extraSites, ...fossilSites, ...religiousSites, ...hotspotSites, ...attestationSites].map((st) => {
+const sites = [...baseSites, ...extraSites, ...fossilSites, ...religiousSites, ...hotspotSites, ...attestationSites, ...monumentSites].map((st) => {
   const tradition = st.tradition ?? TRADITIONS[st.id];
   const hot = HOTSPOT_IDS.includes(st.id) && !st.layers.includes("hotspot");
   if (!tradition && !hot) return st;
@@ -70,6 +73,7 @@ const ALL: Entry[] = [
   ...scripts,
   ...routes,
   ...extraRoutes,
+  ...moreRoutes,
   ...subjects,
   ...articles,
   ...collections,
