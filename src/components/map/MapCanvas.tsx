@@ -191,6 +191,7 @@ export default function MapCanvas({
       return;
     }
     let alive = true;
+    let unbind = () => {};
     (async () => {
       const [clioAll, hbmAll] = await Promise.all([loadPolities(), boundaries.only ? Promise.resolve([] as HbmFeature[]) : loadHbm()]);
       if (!alive) return;
@@ -216,6 +217,9 @@ export default function MapCanvas({
       assignColours(items);
 
       const renderer = leaflet.canvas({ pane: "polities", padding: 0.3 });
+      // Names are placed largest territory first; one that would sit on top of
+      // another is hidden until the map is zoomed far enough to separate them.
+      const labels: { mk: LT.Marker; area: number; w: number; h: number; sel: boolean }[] = [];
       const draw = (it: Item) => {
         const sel = selectedId === it.key || (!!selectedId && CLIO_TO_POLITY[it.name] === selectedId);
         const hb = it.src === "hbm";
@@ -242,18 +246,33 @@ export default function MapCanvas({
         if (it.area > 0.35) {
           const [lng, lat] = ringCentroid(largestRing(it.f));
           const fs = Math.max(11, Math.min(19, 9.5 + Math.sqrt(it.area) * 0.9));
-          group.addLayer(
-            leaflet.marker([lat, lng], {
-              pane: "areaLabels",
-              interactive: false,
-              icon: leaflet.divIcon({ className: "", html: `<span class="ind-area-label${hb ? " ind-area-label-alt" : ""}" style="font-size:${fs.toFixed(0)}px">${it.name}</span>`, iconSize: [0, 0] }),
-            }),
-          );
+          const mk = leaflet.marker([lat, lng], {
+            pane: "areaLabels",
+            interactive: false,
+            icon: leaflet.divIcon({ className: "", html: `<span class="ind-area-label${hb ? " ind-area-label-alt" : ""}" style="font-size:${fs.toFixed(0)}px">${it.name}</span>`, iconSize: [0, 0] }),
+          });
+          group.addLayer(mk);
+          labels.push({ mk, area: it.area, w: it.name.length * fs * 0.5 + 8, h: fs * 1.25, sel });
         }
       };
       const underRenderer = leaflet.canvas({ pane: "politiesUnder", padding: 0.3 });
       items.filter((i) => i.src === "hbm").forEach(draw);
       items.filter((i) => i.src === "cliopatria").forEach(draw);
+      labels.sort((a, b) => Number(b.sel) - Number(a.sel) || b.area - a.area);
+      const declutter = () => {
+        if (!alive) return;
+        const placed: [number, number, number, number][] = [];
+        for (const l of labels) {
+          const pt = m.latLngToContainerPoint(l.mk.getLatLng());
+          const box: [number, number, number, number] = [pt.x - l.w / 2, pt.y - l.h / 2, pt.x + l.w / 2, pt.y + l.h / 2];
+          const hit = placed.some((q) => box[0] < q[2] && box[2] > q[0] && box[1] < q[3] && box[3] > q[1]);
+          l.mk.setOpacity(hit ? 0 : 1);
+          if (!hit) placed.push(box);
+        }
+      };
+      declutter();
+      m.on("zoomend", declutter);
+      unbind = () => m.off("zoomend", declutter);
       onShownRef.current?.(
         items
           .sort((a, b) => b.area - a.area)
@@ -270,6 +289,7 @@ export default function MapCanvas({
     })();
     return () => {
       alive = false;
+      unbind();
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [bKey, ready]);

@@ -72,14 +72,33 @@ export function TimelineExplorer({ items, bands }: { items: TimelineItem[]; band
     return [...g.entries()].sort((a, b) => (bands.findIndex((x) => x.id === a[0]) - bands.findIndex((x) => x.id === b[0])));
   }, [shown, bands]);
 
+  // Overview lanes: each band takes the first lane where neither its bar nor
+  // its label would touch the previous one. Label width is estimated against
+  // the strip's minimum width, so wider screens only gain room.
+  const lanes = useMemo(() => {
+    const ends: number[] = [];
+    return bands.map((b) => {
+      const l = xOf(b.start), r = Math.max(xOf(b.end), l + 0.6);
+      const w = (b.title.split(" and ")[0].length * 6.9 + 14) / 10.4;
+      const flip = l + w > 100;
+      const a0 = flip ? Math.min(l, r - w) : l, a1 = flip ? r : Math.max(r, l + w);
+      let lane = ends.findIndex((e) => e <= a0);
+      if (lane < 0) lane = ends.length;
+      ends[lane] = a1 + 0.4;
+      return { l, r, flip, lane };
+    });
+  }, [bands]);
+  const laneCount = Math.max(1, ...lanes.map((x) => x.lane + 1));
+
   return (
     <div>
       {/* Overview band */}
       <div className="container-ind">
-        <div className="relative border-y rule py-6" aria-hidden>
-          <div className="relative h-[150px]">
+        <div className="border-y rule overflow-x-auto overview-strip" aria-hidden>
+        <div className="relative py-6 min-w-[1040px] lg:min-w-0">
+          <div className="relative" style={{ height: laneCount * 30 + 30 }}>
             {bands.map((b, i) => {
-              const l = xOf(b.start), r = Math.max(xOf(b.end), l + 0.6);
+              const { l, r, flip, lane } = lanes[i];
               const visible = b.end >= from && b.start <= to;
               return (
                 <Link
@@ -88,10 +107,10 @@ export function TimelineExplorer({ items, bands }: { items: TimelineItem[]; band
                   tabIndex={-1}
                   title={`${b.title} · ${b.dateLabel}`}
                   className={`absolute h-[14px] group transition-opacity ${visible ? "opacity-100" : "opacity-25"}`}
-                  style={{ left: `${l}%`, width: `${r - l}%`, top: `${(i % 4) * 30 + 8}px` }}
+                  style={{ left: `${l}%`, width: `${r - l}%`, top: `${lane * 30 + 8}px` }}
                 >
                   <span className={`block h-full ${b.phase === 4 ? "bg-stone-light/60" : "bg-terracotta/70"} group-hover:bg-ink ${b.precision === "debated" || b.precision === "approximate" ? "[mask-image:linear-gradient(90deg,transparent,#000_18%,#000_82%,transparent)]" : ""}`} />
-                  <span className="absolute left-0 top-[16px] data text-[11px] whitespace-nowrap text-stone group-hover:text-ink">{b.title.split(" and ")[0]}</span>
+                  <span className={`absolute top-[16px] data text-[11px] whitespace-nowrap text-stone group-hover:text-ink ${flip ? "right-0" : "left-0"}`}>{b.title.split(" and ")[0]}</span>
                 </Link>
               );
             })}
@@ -100,14 +119,15 @@ export function TimelineExplorer({ items, bands }: { items: TimelineItem[]; band
             ))}
           </div>
           <div className="relative h-5 mt-2 border-t rule">
-            {[-1_500_000, -10000, -5000, -3500, -2000, -500, 1, 700, 1200, 1947].map((y) => (
-              <span key={y} className="absolute top-1.5 -translate-x-1/2 data text-[11px] text-stone whitespace-nowrap" style={{ left: `${xOf(y)}%` }}>
+            {[-1_500_000, -10000, -3500, -2000, -500, 1, 700, 1200, 1947].map((y) => (
+              <span key={y} className={`absolute top-1.5 data text-[11px] text-stone whitespace-nowrap ${y <= -10000 ? "" : y === 1947 ? "-translate-x-full" : "-translate-x-1/2"}`} style={{ left: `${xOf(y)}%` }}>
                 {y === 1 ? "1 CE" : y < -10000 ? "1.5 Ma" : formatYear(y).replace(" years ago", "")}
               </span>
             ))}
           </div>
         </div>
-        <p className="mt-2 data text-[11px] text-stone-light">Scale is compressed for deep time. Faded band ends mark approximate or debated boundaries.</p>
+        </div>
+        <p className="mt-2 data text-[11px] text-stone">Scale is compressed for deep time. Faded band ends mark approximate or debated boundaries.<span className="lg:hidden"> Swipe the strip sideways to see every period.</span></p>
       </div>
 
       {/* Filters */}

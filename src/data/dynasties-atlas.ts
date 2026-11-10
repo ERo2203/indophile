@@ -116,7 +116,7 @@ export const atlasDynasties: PolityEntry[] = [
     region: "Kabul valley and Gandhara",
     summary:
       "Rulers of Kabul and Gandhara who held the passes against the early Arab advance for some two centuries. They were supplanted in the 9th century by the line known as the Hindu Shahis. Their dates come from coins and Arabic and Chinese notices and are approximate.",
-    anchors: [a("Kabul", 34.53, 69.17), a("Kapisa (Begram)", 34.99, 69.31, "earlier capital"), a("Udabhandapura (Hund)", 34.02, 72.43, "winter capital")],
+    anchors: [a("Kabul", 34.53, 69.17), a("Kapisa (Begram)", 34.99, 69.31, "earlier capital"), a("Udabhandapura (Hund)", 34.02, 72.43, "winter capital (uncertain)")],
     radius: 0.7,
     cite: ["kulke-rothermund-2016", "sachau-1888"],
     related: ["hindu-shahi", "alchon-huns", "arab-sindh"],
@@ -233,7 +233,7 @@ export const atlasDynasties: PolityEntry[] = [
     dates: d(1747, 1826, "conventional", "1747 – 1826 CE"),
     region: "Afghanistan and the Indus borderland",
     summary:
-      "Ahmad Shah Abdali was chosen king at Kandahar in 1747 and invaded north India repeatedly, defeating the Marathas at Panipat in 1761. The capital moved to Kabul under Timur Shah. The empire lost the Punjab, Kashmir and Peshawar to the Sikhs and broke up in the 1820s.",
+      "Ahmad Shah Abdali was chosen king at Kandahar in 1747 and invaded north India repeatedly, defeating the Marathas at Panipat in 1761. The capital moved to Kabul under Timur Shah. The empire lost Multan, Kashmir and the Punjab to the Sikhs and broke up in the 1820s; Peshawar followed in 1834.",
     anchors: [a("Kandahar", 31.61, 65.71), a("Kabul", 34.53, 69.17), a("Peshawar", 34.01, 71.58, "winter capital")],
     radius: 1.1,
     cite: ["kulke-rothermund-2016", "grewal-1990"],
@@ -299,7 +299,7 @@ export const atlasDynasties: PolityEntry[] = [
     dates: d(1846, 1947, "secure", "1846 – 1947 CE"),
     region: "Western Himalaya",
     summary:
-      "Created by the Treaty of Amritsar in 1846, when the British transferred Kashmir to Gulab Singh of Jammu after the first Anglo-Sikh war. The largest of the princely states, it joined Jammu, the Kashmir valley, Ladakh and Gilgit under the Dogra house. Its accession in October 1947 opened the dispute between India and Pakistan.",
+      "Created by the Treaty of Amritsar in 1846, when the British transferred Kashmir to Gulab Singh of Jammu after the first Anglo-Sikh war. The largest princely state by area, it came to join Jammu, the Kashmir valley, Ladakh and Gilgit under the Dogra house. Its accession in October 1947 opened the dispute between India and Pakistan.",
     anchors: [a("Jammu", 32.73, 74.86, "winter capital"), a("Srinagar", 34.08, 74.8)],
     radius: 1.0,
     cite: ["kulke-rothermund-2016", "bose-jalal-2004"],
@@ -314,7 +314,7 @@ export const atlasDynasties: PolityEntry[] = [
     region: "South Asia",
     summary:
       "After the rebellion of 1857 the Government of India Act of 1858 transferred the East India Company's territories to the British crown. British India was governed through provinces, while several hundred princely states remained under their own rulers subject to British paramountcy. The capital moved from Calcutta to Delhi after 1911. Crown rule ended with independence and partition in August 1947.",
-    anchors: [a("Calcutta", 22.57, 88.36, "capital to 1911", 1858, 1911), a("New Delhi", 28.61, 77.21, "capital", 1911, 1947), a("Simla", 31.1, 77.17, "summer capital")],
+    anchors: [a("Calcutta", 22.57, 88.36, "capital to 1911", 1858, 1911), a("Delhi (New Delhi from 1931)", 28.61, 77.21, "capital", 1911, 1947), a("Simla", 31.1, 77.17, "summer capital")],
     radius: 2.5,
     cite: ["kulke-rothermund-2016", "bose-jalal-2004"],
     related: ["east-india-company", "british-ceylon", "jammu-kashmir", "hyderabad-state", "mysore-kingdom", "travancore"],

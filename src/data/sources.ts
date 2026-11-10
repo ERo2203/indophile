@@ -180,6 +180,6 @@ export const sources: Source[] = [
   { id: "unesco-586", kind: "unesco", authors: "UNESCO World Heritage Centre", year: 1997, title: "Rohtas Fort (List no. 586)", url: "https://whc.unesco.org/en/list/586", verified: false },
   { id: "unesco-251", kind: "unesco", authors: "UNESCO World Heritage Centre", year: 1983, title: "Agra Fort (List no. 251)", url: "https://whc.unesco.org/en/list/251", verified: false },
   { id: "unesco-231", kind: "unesco", authors: "UNESCO World Heritage Centre", year: 2007, title: "Red Fort Complex (List no. 231)", url: "https://whc.unesco.org/en/list/231", verified: false },
-  { id: "unesco-247", kind: "unesco", authors: "UNESCO World Heritage Centre", year: 2013, title: "Hill Forts of Rajasthan (List no. 247)", url: "https://whc.unesco.org/en/list/247", verified: false },
+  { id: "unesco-247", kind: "unesco", authors: "UNESCO World Heritage Centre", year: 2013, title: "Hill Forts of Rajasthan (List no. 247)", url: "https://whc.unesco.org/en/list/247", verified: true },
   { id: "unesco-451", kind: "unesco", authors: "UNESCO World Heritage Centre", year: 1988, title: "Old Town of Galle and its Fortifications (List no. 451)", url: "https://whc.unesco.org/en/list/451", verified: false },
 ];
