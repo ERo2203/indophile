@@ -14,6 +14,7 @@ import { DynamicMap } from "./DynamicMap";
 import { TimeScroller } from "./TimeScroller";
 
 const ALL_LAYERS: MapLayer[] = ["polity", "archaeological", "settlement", "inscription", "temple", "religious", "hotspot", "language", "fossil", "port", "trade", "migration", "battle", "unesco"];
+const SHEET = "relative w-full min-h-0 shrink overflow-y-auto overscroll-contain bg-parchment border-t sm:border rule rounded-t-2xl sm:rounded-none shadow-[0_-18px_50px_-24px_rgba(0,0,0,.55)] sm:shadow-[0_24px_60px_-28px_rgba(0,0,0,.55)]";
 const LINE_LAYERS: MapLayer[] = ["polity", "migration", "trade"];
 const SHORT: Record<MapLayer, string> = {
   archaeological: "Sites",
@@ -88,6 +89,13 @@ export function AtlasExplorer({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
+  useEffect(() => {
+    if (!selected) return;
+    const onKey = (e: KeyboardEvent) => e.key === "Escape" && setSelected(null);
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, [selected]);
+
   const inTime = (start: number, end: number) => allTime || (start <= y && y <= end);
 
   const points = useMemo(
@@ -144,7 +152,10 @@ export function AtlasExplorer({
   const visible = points.length + routes.length + (boundaries ? shownPolities : 0);
 
   return (
-    <div className={`relative flex flex-col overflow-hidden bg-[var(--map-sea)] ${isPreview ? "h-[600px] lg:h-[680px]" : "h-[calc(100svh-4rem)]"}`}>
+    <div
+      data-immersive={isPreview ? undefined : ""}
+      className={`atlas-shell relative isolate flex flex-col overflow-hidden bg-[var(--map-sea)] ${isPreview ? "h-[600px] lg:h-[680px]" : "h-[calc(100svh-4rem)] supports-[height:100dvh]:h-[calc(100dvh-4rem)]"}`}
+    >
       <div className="relative flex-1 min-h-0">
         <DynamicMap
           className="absolute inset-0"
@@ -159,24 +170,43 @@ export function AtlasExplorer({
           initialView={initialView ?? (isPreview || narrow ? { center: [21, 78], zoom: 4 } : { center: [21.5, 77], zoom: 5 })}
         />
 
-        {/* Theme switch */}
-        <div className="absolute top-3 left-14 z-[520] flex gap-px bg-ink/15 border border-ink/15 shadow-[0_6px_20px_-12px_rgba(0,0,0,.45)]" role="tablist" aria-label="Map theme">
-          {THEMES.map((t) => (
+        {/* Row 1 — theme switch and map utilities */}
+        <div className="absolute top-3 left-3 sm:left-14 right-3 z-[520] flex items-start justify-between gap-2 pointer-events-none">
+          <div className="pointer-events-auto flex gap-px bg-ink/15 border border-ink/15 shadow-[0_6px_20px_-12px_rgba(0,0,0,.45)]" role="tablist" aria-label="Map theme">
+            {THEMES.map((t) => (
+              <button
+                key={t.id}
+                role="tab"
+                aria-selected={theme === t.id}
+                onClick={() => chooseTheme(t.id)}
+                className={`h-9 sm:h-8 px-2.5 sm:px-3 text-[12px] font-medium transition-colors ${theme === t.id ? "bg-ink text-parchment" : "bg-ivory/95 text-ink hover:bg-ivory"}`}
+              >
+                {t.label}
+              </button>
+            ))}
+          </div>
+          <div className="pointer-events-auto flex gap-1.5 shrink-0">
+            <ToolButton on={basemap === "terrain"} onClick={() => setBasemap((b) => (b === "plain" ? "terrain" : "plain"))} label="Terrain" title="Switch between a plain map and physical terrain">
+              <path d="m2.5 18.5 6-9 4 5.5 2.5-3 6.5 6.5z" strokeLinejoin="round" />
+            </ToolButton>
+            <ToolButton on={modern} onClick={() => setModern((m) => !m)} label="Modern borders" title="Overlay present-day international borders, for orientation">
+              <path d="M4 6.5c3 1.5 4.5-1 7.5.5s3.5 4 8.5 2.5M4 14c3 1.5 4.5-1 7.5.5s3.5 4 8.5 2.5" strokeDasharray="2.4 2.2" />
+            </ToolButton>
             <button
-              key={t.id}
-              role="tab"
-              aria-selected={theme === t.id}
-              onClick={() => chooseTheme(t.id)}
-              className={`h-8 px-3 text-[12px] font-medium ${theme === t.id ? "bg-ink text-parchment" : "bg-ivory/90 text-ink hover:bg-ivory"}`}
+              onClick={() => setLegend((v) => !v)}
+              aria-expanded={legend}
+              className={`h-9 w-9 sm:h-8 sm:w-8 border font-display italic text-lg leading-none shadow-[0_6px_20px_-12px_rgba(0,0,0,.45)] transition-colors ${legend ? "bg-ink text-parchment border-ink" : "bg-ivory/95 border-ink/10 text-ink hover:bg-ivory"}`}
+              title="How to read this map"
+              aria-label="How to read this map"
             >
-              {t.label}
+              i
             </button>
-          ))}
+          </div>
         </div>
 
-        {/* Filter chips, floating on the map */}
-        <div className="absolute top-14 left-14 right-3 z-[500] flex items-start gap-2 pointer-events-none min-w-0">
-          <div className="no-scrollbar flex gap-1.5 overflow-x-auto pointer-events-auto pb-1 min-w-0" role="group" aria-label="Map filters">
+        {/* Row 2 — layer filters, a full-width scrolling strip */}
+        <div className="absolute top-[3.6rem] sm:top-14 left-0 sm:left-14 right-0 z-[500] pointer-events-none">
+          <div className="atlas-chips no-scrollbar flex gap-1.5 overflow-x-auto pointer-events-auto px-3 sm:pl-0 pb-2" role="group" aria-label="Map layers">
             {ALL_LAYERS.map((l) => {
               const on = layers.has(l);
               const n = counts[l] ?? 0;
@@ -187,8 +217,8 @@ export function AtlasExplorer({
                   onDoubleClick={() => solo(l)}
                   aria-pressed={on}
                   title={`${LAYER_META[l].label} — click to toggle, double-click to show only this`}
-                  className={`shrink-0 inline-flex items-center gap-1.5 h-8 pl-2 pr-2.5 text-[12px] border shadow-[0_6px_20px_-12px_rgba(0,0,0,.45)] transition-all ${
-                    on ? "bg-ivory border-ink/15 text-ink" : "bg-ivory/60 backdrop-blur border-transparent text-stone hover:bg-ivory/85"
+                  className={`shrink-0 inline-flex items-center gap-1.5 h-9 sm:h-8 pl-2 pr-2.5 text-[12px] border shadow-[0_6px_20px_-12px_rgba(0,0,0,.45)] transition-colors ${
+                    on ? "bg-ivory border-ink/20 text-ink" : "bg-ivory/70 backdrop-blur border-transparent text-stone hover:bg-ivory/90"
                   } ${n === 0 && on ? "opacity-70" : ""}`}
                 >
                   <Swatch layer={l} on={on} />
@@ -197,39 +227,12 @@ export function AtlasExplorer({
                 </button>
               );
             })}
-          </div>
-          <div className="ml-auto flex gap-1.5 pointer-events-auto shrink-0">
-            <button
-              onClick={() => setBasemap((b) => (b === "plain" ? "terrain" : "plain"))}
-              aria-pressed={basemap === "terrain"}
-              className={`h-8 px-3 text-[12px] border shadow-[0_6px_20px_-12px_rgba(0,0,0,.45)] ${basemap === "terrain" ? "bg-ink text-parchment border-ink" : "bg-ivory/85 backdrop-blur border-ink/10 text-ink"}`}
-              title="Switch between a plain map and physical terrain"
-            >
-              Terrain
-            </button>
-            <button
-              onClick={() => setModern((m) => !m)}
-              aria-pressed={modern}
-              className={`h-8 px-3 text-[12px] border shadow-[0_6px_20px_-12px_rgba(0,0,0,.45)] ${modern ? "bg-ink text-parchment border-ink" : "bg-ivory/85 backdrop-blur border-ink/10 text-ink"}`}
-              title="Overlay present-day international borders, for orientation"
-            >
-              <span className="sm:hidden">Borders</span>
-              <span className="hidden sm:inline">Modern borders</span>
-            </button>
-            <button
-              onClick={() => setLegend((v) => !v)}
-              aria-expanded={legend}
-              className="h-8 w-8 border bg-ivory/85 backdrop-blur border-ink/10 font-display italic text-lg leading-none shadow-[0_6px_20px_-12px_rgba(0,0,0,.45)]"
-              title="How to read this map"
-              aria-label="How to read this map"
-            >
-              i
-            </button>
+            <span className="shrink-0 w-3 sm:w-1" aria-hidden />
           </div>
         </div>
 
         {legend && (
-          <div className="absolute top-14 right-3 z-[650] w-[300px] bg-parchment border rule p-5 shadow-[0_20px_50px_-25px_rgba(0,0,0,.5)] text-[12.5px] leading-relaxed space-y-3">
+          <div className="absolute top-[3.6rem] sm:top-12 right-3 z-[650] w-[min(300px,calc(100%-1.5rem))] max-h-[calc(100%-5rem)] overflow-y-auto bg-parchment border rule p-5 shadow-[0_20px_50px_-25px_rgba(0,0,0,.5)] text-[12.5px] leading-relaxed space-y-3">
             <p className="eyebrow">How to read this map</p>
             <p><span className="inline-block w-4 h-3 align-middle mr-1.5 bg-terracotta/50 border border-ink/40" />Kingdoms are drawn from <a className="underline" href={CLIOPATRIA_CITATION.repo} target="_blank" rel="noopener noreferrer">Cliopatria</a>, the Seshat Global History Databank&apos;s peer-reviewed boundary dataset (CC BY 4.0), exactly as published — one scholarly reconstruction among several. Where Cliopatria is blank, regions from <a className="underline" href={HBM_CITATION.repo} target="_blank" rel="noopener noreferrer">historical-basemaps</a> (GPL-3.0) fill the gap with dashed borders and italic names — a coarser, approximate source.</p>
             <p>Language areas are not drawn: no sourced historical language-area dataset has been added yet. The Languages theme shows dated first inscriptions.</p>
@@ -241,7 +244,7 @@ export function AtlasExplorer({
         )}
 
         {theme === "political" && shown.length > 0 && !selected && (
-          <div className={`absolute left-3 bottom-3 z-[500] w-[260px] bg-parchment/95 backdrop-blur border rule shadow-[0_16px_40px_-24px_rgba(0,0,0,.5)] ${listOpen ? "max-h-[60%]" : ""} flex flex-col`}>
+          <div className={`absolute left-3 bottom-7 sm:bottom-3 z-[500] w-[min(260px,calc(100%-1.5rem))] bg-parchment/95 backdrop-blur border rule shadow-[0_16px_40px_-24px_rgba(0,0,0,.5)] ${listOpen ? "max-h-[60%]" : ""} flex flex-col`}>
             <button onClick={() => setListOpen((o) => !o)} aria-expanded={listOpen} className="flex items-center justify-between px-4 py-2.5 text-left">
               <span className="eyebrow">Polities in {formatYear(year)} · {shownPolities}</span>
               <span className="data text-stone">{listOpen ? "–" : "+"}</span>
@@ -264,7 +267,7 @@ export function AtlasExplorer({
         )}
 
         {theme === "religion" && religionCounts.length > 0 && !selected && (
-          <div className="absolute left-3 bottom-3 z-[500] w-[290px] bg-parchment/95 border rule p-4 shadow-[0_16px_40px_-24px_rgba(0,0,0,.5)]">
+          <div className="absolute left-3 bottom-7 sm:bottom-3 z-[500] w-[min(290px,calc(100%-1.5rem))] bg-parchment/95 border rule p-4 shadow-[0_16px_40px_-24px_rgba(0,0,0,.5)]">
             <p className="eyebrow mb-2">Catalogued sacred sites active {allTime ? "in all periods" : `in ${formatYear(year)}`}</p>
             <div className="flex h-3 w-full overflow-hidden">
               {religionCounts.map(([t, n]) => (
@@ -293,7 +296,7 @@ export function AtlasExplorer({
 
         {/* Selection panel */}
         {selected && (
-          <div className="absolute z-[700] inset-x-2 bottom-2 max-h-[70%] lg:inset-x-auto lg:bottom-3 lg:top-14 lg:right-3 lg:w-[380px] lg:max-h-none flex">
+          <div className="atlas-sheet absolute z-[700] inset-x-0 bottom-0 max-h-[78%] sm:inset-x-auto sm:left-3 sm:right-auto sm:bottom-3 sm:w-[400px] sm:max-h-[calc(100%-7.5rem)] lg:left-auto lg:right-3 lg:top-[6.25rem] lg:max-h-none flex flex-col justify-end sm:justify-start">
             <InfoPanel payload={payload} selected={selected} shown={shown} onClose={() => setSelected(null)} compact={isPreview} />
           </div>
         )}
@@ -328,6 +331,7 @@ function Swatch({ layer, on }: { layer: MapLayer; on: boolean }) {
 
 function InfoPanel({ payload, selected, shown, onClose, compact }: { payload: MapPayload; selected: NonNullable<Selected>; shown: ShownPolity[]; onClose: () => void; compact?: boolean }) {
   const link = (id: string) => payload.index[id];
+  const hasImage = selected.kind === "point" && !compact && !!payload.points.find((x) => x.id === selected.id)?.image;
   let body: React.ReactNode = null;
 
   if (selected.kind === "point") {
@@ -337,14 +341,14 @@ function InfoPanel({ payload, selected, shown, onClose, compact }: { payload: Ma
     body = (
       <>
         {p.image && !compact && (
-          <div className="relative aspect-[16/9] -mx-6 -mt-6 mb-5 bg-sage-pale">
+          <div className="relative aspect-[2/1] sm:aspect-[16/9] -mx-5 sm:-mx-6 mb-5 bg-sage-pale overflow-hidden">
             <Image src={p.image.src} alt={p.title} fill sizes="380px" className="object-cover" />
-            <span className="absolute bottom-1 right-2 data text-[11px] text-paper/90 drop-shadow">{p.image.credit}</span>
+            <span className="absolute inset-x-0 bottom-0 px-3 pt-6 pb-1.5 text-right data text-[11px] text-paper bg-gradient-to-t from-black/55 to-transparent">{p.image.credit}</span>
           </div>
         )}
         <p className="eyebrow mb-2" style={{ color: LAYER_META[layer].color }}>{LAYER_META[layer].label.replace(/s$/, "")}</p>
-        <h2 className="font-display text-[1.9rem] leading-tight">{p.title}</h2>
-        <p className="data text-stone mt-1">{p.modern}, {p.country}{p.approximate ? " · location approximate" : ""}</p>
+        <h2 className="font-display text-[1.75rem] sm:text-[1.9rem] leading-tight pr-10 text-balance">{p.title}</h2>
+        <p className="data text-[12px] text-stone mt-1.5 leading-relaxed">{p.modern}, {p.country}{p.approximate ? " · location approximate" : ""}</p>
         <p className="text-sm text-ink/85 leading-relaxed mt-4">{p.summary}</p>
         <dl className="mt-5 divide-y rule border-y rule text-[13px]">
           <Row k="Period" v={p.dateLabel} />
@@ -380,10 +384,10 @@ function InfoPanel({ payload, selected, shown, onClose, compact }: { payload: Ma
     if (hk) {
       const item = shown.find((x) => x.key === selected.id);
       return (
-        <aside className="relative w-full self-start max-h-full overflow-y-auto bg-parchment border rule shadow-[0_24px_60px_-28px_rgba(0,0,0,.55)] p-6" aria-label="Polity details">
-          <button onClick={onClose} className="absolute right-3 top-3 w-8 h-8 flex items-center justify-center text-stone hover:text-ink" aria-label="Close panel">✕</button>
+        <aside className={`${SHEET} px-5 pt-7 pb-6 sm:p-6`} aria-label="Polity details">
+          <SheetChrome onClose={onClose} />
           <p className="eyebrow mb-2" style={{ color: item?.color }}>Political boundary · gap-fill source</p>
-          <h2 className="font-display text-[1.9rem] leading-tight">{hk.name}</h2>
+          <h2 className="font-display text-[1.75rem] sm:text-[1.9rem] leading-tight pr-10 text-balance">{hk.name}</h2>
           {item && <p className="data text-stone mt-1">Map slice {fy(item.from)} (valid to {fy(item.to)})</p>}
           <p className="mt-4 text-[13px] text-ink/85 leading-relaxed">
             Shown because the primary dataset (Cliopatria) has no polity here at this date. This outline comes from a coarser, time-sliced world map whose borders are marked as approximate; treat it as indicative only.
@@ -399,10 +403,10 @@ function InfoPanel({ payload, selected, shown, onClose, compact }: { payload: Ma
       const t = pid ? payload.territories.find((x) => x.polityId === pid) : undefined;
       const rec = pid ? payload.index[pid] : undefined;
       return (
-        <aside className="relative w-full self-start max-h-full overflow-y-auto bg-parchment border rule shadow-[0_24px_60px_-28px_rgba(0,0,0,.55)] p-6" aria-label="Polity details">
-          <button onClick={onClose} className="absolute right-3 top-3 w-8 h-8 flex items-center justify-center text-stone hover:text-ink" aria-label="Close panel">✕</button>
+        <aside className={`${SHEET} px-5 pt-7 pb-6 sm:p-6`} aria-label="Polity details">
+          <SheetChrome onClose={onClose} />
           <p className="eyebrow mb-2" style={{ color: shown.find((x) => x.key === selected.id)?.color }}>Political boundary · Cliopatria</p>
-          <h2 className="font-display text-[1.9rem] leading-tight">{rec?.t ?? ck.name}</h2>
+          <h2 className="font-display text-[1.75rem] sm:text-[1.9rem] leading-tight pr-10 text-balance">{rec?.t ?? ck.name}</h2>
           {rec && rec.t !== ck.name && <p className="data text-[11px] text-stone mt-1">Cliopatria: {ck.name}</p>}
           {t && <p className="data text-stone mt-1">{t.dateLabel} · {t.kind}</p>}
           <p className="mt-4 text-[13px] text-ink/85 leading-relaxed">
@@ -424,7 +428,7 @@ function InfoPanel({ payload, selected, shown, onClose, compact }: { payload: Ma
     body = (
       <>
         <p className="eyebrow mb-2">Polity{t.region ? ` · ${t.region}` : ""}</p>
-        <h2 className="font-display text-[1.9rem] leading-tight">{t.title}</h2>
+        <h2 className="font-display text-[1.75rem] sm:text-[1.9rem] leading-tight pr-10 text-balance">{t.title}</h2>
         <p className="data text-stone mt-1">{t.dateLabel} · {t.kind}</p>
         <p className="mt-3 data text-[11px] text-ink">
           Duration: {t.end - t.start > 0 ? `about ${(t.end - t.start).toLocaleString("en")} years` : "single date"}
@@ -439,7 +443,7 @@ function InfoPanel({ payload, selected, shown, onClose, compact }: { payload: Ma
     body = (
       <>
         <p className="eyebrow mb-2">{r.layer === "migration" ? "Population movement" : "Trade route"}</p>
-        <h2 className="font-display text-[1.9rem] leading-tight">{r.title}</h2>
+        <h2 className="font-display text-[1.75rem] sm:text-[1.9rem] leading-tight pr-10 text-balance">{r.title}</h2>
         <p className="data text-stone mt-1">{r.dateLabel}</p>
         <p className="text-sm text-ink/85 leading-relaxed mt-4">{r.summary}</p>
         <p className="mt-4 text-[12px] text-stone border-l-2 border-sage pl-3">
@@ -458,10 +462,10 @@ function InfoPanel({ payload, selected, shown, onClose, compact }: { payload: Ma
 
   return (
     <aside
-      className="relative w-full self-start max-h-full bg-parchment border rule shadow-[0_24px_60px_-28px_rgba(0,0,0,.55)] overflow-y-auto p-6"
+      className={`${SHEET} px-5 pt-7 pb-6 sm:p-6 ${hasImage ? "!pt-0 sm:!pt-0" : ""}`}
       aria-label="Selected location details"
     >
-      <button onClick={onClose} className="absolute right-3 top-3 z-10 w-8 h-8 flex items-center justify-center bg-parchment/90 rounded-full text-stone hover:text-ink" aria-label="Close panel">✕</button>
+      <SheetChrome onClose={onClose} />
       {body}
     </aside>
   );
@@ -474,5 +478,43 @@ function Row({ k, v }: { k: string; v?: string | number }) {
       <dt className="eyebrow pt-0.5">{k}</dt>
       <dd className="leading-snug">{v}</dd>
     </div>
+  );
+}
+
+function SheetChrome({ onClose }: { onClose: () => void }) {
+  return (
+    <>
+      <span aria-hidden className="sm:hidden absolute top-2 left-1/2 -translate-x-1/2 z-10 h-1 w-10 rounded-full bg-ink/25 mix-blend-multiply" />
+      <div className="sticky top-0 z-10 h-0 flex justify-end">
+        <button
+          onClick={onClose}
+          className="mt-3 -mr-2 sm:-mr-3 w-10 h-10 flex items-center justify-center rounded-full bg-parchment/95 border rule text-stone hover:text-ink shadow-[0_6px_16px_-10px_rgba(0,0,0,.5)]"
+          aria-label="Close panel"
+        >
+          <svg viewBox="0 0 24 24" className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" aria-hidden>
+            <path d="M6 6l12 12M18 6 6 18" />
+          </svg>
+        </button>
+      </div>
+    </>
+  );
+}
+
+function ToolButton({ on, onClick, label, title, children }: { on: boolean; onClick: () => void; label: string; title: string; children: React.ReactNode }) {
+  return (
+    <button
+      onClick={onClick}
+      aria-pressed={on}
+      aria-label={label}
+      title={title}
+      className={`h-9 sm:h-8 w-9 md:w-auto md:px-3 inline-flex items-center justify-center gap-1.5 border text-[12px] shadow-[0_6px_20px_-12px_rgba(0,0,0,.45)] transition-colors ${
+        on ? "bg-ink text-parchment border-ink" : "bg-ivory/95 border-ink/10 text-ink hover:bg-ivory"
+      }`}
+    >
+      <svg viewBox="0 0 24 24" className="w-4 h-4 shrink-0" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" aria-hidden>
+        {children}
+      </svg>
+      <span className="hidden md:inline">{label}</span>
+    </button>
   );
 }

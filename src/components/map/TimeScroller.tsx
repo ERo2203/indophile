@@ -286,10 +286,10 @@ export function TimeScroller({
     <div className="bg-night/[0.93] backdrop-blur-md text-paper border-t border-paper/10 shadow-[0_-20px_50px_-30px_rgba(0,0,0,.6)]">
       <div className="flex flex-col sm:flex-row items-stretch">
         {/* Readout */}
-        <div className={`shrink-0 flex flex-row flex-wrap sm:flex-col sm:flex-nowrap items-center sm:items-stretch justify-between sm:justify-center gap-x-3 border-b sm:border-b-0 sm:border-r border-paper/10 ${compact ? "sm:w-[170px] px-4 py-2.5 sm:py-3" : "sm:w-[250px] px-4 sm:px-5 py-2.5 sm:py-4"}`}>
-          <div>
+        <div className={`shrink-0 flex flex-row sm:flex-col items-center sm:items-stretch justify-between sm:justify-center gap-x-3 border-b sm:border-b-0 sm:border-r border-paper/10 ${compact ? "sm:w-[170px] px-4 py-2.5 sm:py-3" : "sm:w-[250px] px-4 sm:px-5 py-2.5 sm:py-4"}`}>
+          <div className="min-w-0">
           <p className="data text-[11px] uppercase tracking-[0.16em] text-gold">{allTime ? "Showing" : `${stepFor(year).toLocaleString("en")}-year steps`}</p>
-          <p className={`font-display leading-none mt-1.5 tabular-nums text-[1.8rem] ${compact ? "sm:text-[1.9rem]" : "sm:text-[2.5rem]"} ${allTime ? "text-paper/40" : ""}`} aria-live="polite">
+          <p className={`font-display leading-none mt-1.5 tabular-nums text-[1.55rem] whitespace-nowrap ${compact ? "sm:text-[1.9rem]" : "sm:text-[2.5rem]"} ${allTime ? "text-paper/40" : ""}`} aria-live="polite">
             {allTime ? "All periods" : formatYear(year)}
           </p>
           {!compact && (
@@ -298,7 +298,7 @@ export function TimeScroller({
             </p>
           )}
           </div>
-          <div className="flex items-center gap-1.5 sm:mt-3">
+          <div className="flex items-center gap-1 sm:gap-1.5 sm:mt-3 shrink-0">
             <IconBtn label="Step back" onClick={() => step(-1)} disabled={allTime}>‹</IconBtn>
             <IconBtn label={playing ? "Pause" : "Play through time"} onClick={() => { onAllTime(false); setPlaying((p) => !p); }} active={playing}>
               {playing ? "❚❚" : "▶"}
@@ -308,7 +308,7 @@ export function TimeScroller({
               onClick={() => setSpeed((v) => SPEEDS[(SPEEDS.indexOf(v) + 1) % SPEEDS.length])}
               aria-label={`Playback speed ${speed}×, click to change`}
               title="Playback speed"
-              className="data text-[11px] px-1.5 h-9 sm:h-8 min-w-9 sm:min-w-8 border border-paper/25 text-paper/80 hover:text-paper hover:border-paper/50 tabular-nums"
+              className="hidden sm:inline-block data text-[11px] px-1.5 h-9 sm:h-8 min-w-9 sm:min-w-8 border border-paper/25 text-paper/80 hover:text-paper hover:border-paper/50 tabular-nums"
             >
               {speed}×
             </button>

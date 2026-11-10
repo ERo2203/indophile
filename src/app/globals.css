@@ -385,3 +385,22 @@ input[type="range"].time::-moz-range-thumb {
 .rise-2 { animation-delay: 0.12s; }
 .rise-3 { animation-delay: 0.24s; }
 .rise-4 { animation-delay: 0.36s; }
+
+/* ── Atlas shell ─────────────────────────────────────────────── */
+/* The full atlas is an app surface: no page scroll, no footer under it. */
+html:has([data-immersive]) { overflow: hidden; overscroll-behavior: none; }
+body:has([data-immersive]) > footer { display: none; }
+/* Pinch replaces the zoom buttons on phones, freeing the top-left corner. */
+@media (max-width: 639px) { .atlas-shell .leaflet-control-zoom { display: none; } }
+/* The layer strip fades at its edge so it reads as scrollable. */
+.atlas-chips { mask-image: linear-gradient(to right, #000 calc(100% - 28px), transparent); }
+@media (prefers-reduced-motion: no-preference) {
+  .atlas-sheet > aside { animation: sheet-in .32s cubic-bezier(.16,1,.3,1); }
+}
+@keyframes sheet-in { from { transform: translateY(14px); } }
+/* Phones: credits stay on one line until touched, so they never crowd the map. */
+@media (max-width: 639px) {
+  .atlas-shell .leaflet-control-attribution { max-width: 100vw; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .atlas-shell .leaflet-control-attribution:hover,
+  .atlas-shell .leaflet-control-attribution:active { white-space: normal; }
+}
