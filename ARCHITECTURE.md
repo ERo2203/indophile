@@ -48,7 +48,7 @@ In the seed repository these tables are TypeScript arrays (`src/lib/types.ts` de
 
 - **Relations are stored once.** `related: [...]` on one side; `db.related(id)` returns both directions.
 - **Dates** are signed years (`-322` = 322 BCE) with `precision: secure | conventional | approximate | debated`. Ranges may be open (`end` omitted). Labels like "3rd century BCE" are optional overrides.
-- **Territories are never hand-drawn.** A polity lists the evidence (inscription find-spots, excavated sites) that attests its reach; `src/lib/geo.ts` computes the envelope. Every vertex traces back to a sourced record. Each territory carries `basis`, `confidence` (documented / estimated / disputed) and a date of maximum extent.
+- **Borders come from a published dataset, never generated.** Political boundaries are Cliopatria v0.2.1 (Seshat Global History Databank; Cioni et al. 2025, *Scientific Data*; CC BY 4.0), clipped to South Asia and simplified into `public/geo/polities.json` (1,515 dated boundary versions). `src/lib/cliopatria.ts` links Cliopatria names to Indophile polity records and carries the required credit. Polities absent from Cliopatria are shown only by their located places (capitals, inscriptions, monuments in `extent.anchors`). To refresh: download a new Cliopatria release and rerun the clip/simplify step (see the comment at the top of `src/lib/cliopatria.ts`).
 - **Routes** store attested waypoints and declare `geometryBasis: attested-waypoints | schematic`; migration routes are always schematic model arrows.
 - **Genetics**: studies record `evidenceType` (direct ancient DNA / modelling / mixed); concepts record `basis` (observed / statistical construct). No ancestry percentages are stored.
 

@@ -11,7 +11,7 @@ const RULES: [string, string][] = [
   ["Every claim is traceable", "Entries and their individual sections cite records in a shared bibliography. An entry with no sources cannot be published — the build fails."],
   ["Kinds of evidence stay separate", "Archaeological evidence, inscriptions, later historical texts, oral traditions and mythology are distinguished. Traditional accounts are presented respectfully and labelled as traditions."],
   ["Nothing is invented", "No dates, discoveries, genetic results, quotations, references or boundaries are created to fill a gap. Gaps are shown as gaps."],
-  ["Territories come from evidence", "Political extents are envelopes around the find-spots of dated evidence (inscriptions, excavated sites), marked as documented, estimated or disputed. None is hand-drawn."],
+  ["Borders come from published maps", "Political boundaries are drawn exactly as published in Cliopatria (Seshat Global History Databank, Scientific Data 2025, CC BY 4.0). Indophile generates no borders of its own; polities without a published boundary appear only as their located capitals, inscriptions and monuments."],
   ["No retroactive nations", "Modern borders appear only for orientation. Ancient polities are never described as belonging to present-day nation-states."],
   ["Neutrality", "We avoid nationalist, religious, ethnic and political framing, and present competing scholarly positions in their own terms."],
 ];
@@ -66,9 +66,9 @@ export default function MethodologyPage() {
           </div>
         </section>
 
-        <section id="genetics" className="bg-night text-ivory/85 px-6 sm:px-12 py-14">
+        <section id="genetics" className="bg-night text-paper/85 px-6 sm:px-12 py-14">
           <p className="rubric !text-gold">Archaeogenetics</p>
-          <h2 className="h2 text-ivory mt-3">Rules for writing about ancient DNA</h2>
+          <h2 className="h2 text-paper mt-3">Rules for writing about ancient DNA</h2>
           <ul className="mt-8 grid md:grid-cols-2 gap-6 leading-relaxed">
             <li>Genetic ancestry is never presented as equivalent to ethnic, linguistic, religious, caste or national identity.</li>
             <li>No present-day community is described as the direct, unchanged descendant of a single ancient population.</li>

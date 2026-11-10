@@ -8,7 +8,7 @@ export const metadata: Metadata = { title: "Editorial dashboard", robots: { inde
 export const dynamic = "force-dynamic";
 
 const STATUS_STYLE: Record<Status, string> = {
-  published: "bg-sage-deep text-ivory",
+  published: "bg-sage-strong text-paper",
   "in-review": "bg-gold/30 text-ink",
   draft: "border border-stone/50 text-stone",
 };
@@ -67,7 +67,7 @@ export default function AdminPage() {
                 <tbody>
                   {issues.map((i, n) => (
                     <tr key={n} className="border-b rule align-top">
-                      <td className="p-3"><span className={`data text-[10px] px-1.5 py-0.5 ${i.severity === "error" ? "bg-terracotta text-ivory" : "bg-gold/30"}`}>{i.severity}</span></td>
+                      <td className="p-3"><span className={`data text-[11px] px-1.5 py-0.5 ${i.severity === "error" ? "bg-terracotta text-parchment" : "bg-gold/30"}`}>{i.severity}</span></td>
                       <td className="p-3 data text-[12px]">{i.entryId}</td>
                       <td className="p-3">{i.message}</td>
                     </tr>
@@ -75,7 +75,7 @@ export default function AdminPage() {
                 </tbody>
               </table>
             )}
-            <p className="mt-3 data text-[10px] text-stone">Published entries with blocking errors fail the production build.</p>
+            <p className="mt-3 data text-[11px] text-stone">Published entries with blocking errors fail the production build.</p>
           </section>
 
           <aside className="space-y-8">
@@ -109,7 +109,7 @@ export default function AdminPage() {
               <tbody>
                 {entries.map((e) => (
                   <tr key={e.id} className="border-b rule hover:bg-parchment">
-                    <td className="p-3"><span className={`data text-[10px] px-1.5 py-0.5 ${STATUS_STYLE[e.status]}`}>{e.status}</span></td>
+                    <td className="p-3"><span className={`data text-[11px] px-1.5 py-0.5 ${STATUS_STYLE[e.status]}`}>{e.status}</span></td>
                     <td className="p-3 data text-[11px] text-stone">{TYPE_LABEL[e.type]}</td>
                     <td className="p-3">{e.status === "published" ? <Link href={hrefFor(e)} className="hover:text-terracotta">{e.title}</Link> : e.title}</td>
                     <td className="p-3 data text-[12px]">{sourcesFor(e).length}</td>

@@ -32,9 +32,9 @@ export default async function StudyPage({ params }: { params: Promise<{ id: stri
 
   const block = (title: string, items: string[] | undefined, tone: "plain" | "warn" = "plain", rubric?: string) =>
     items && items.length > 0 ? (
-      <section className={tone === "warn" ? "bg-night text-ivory/85 px-6 sm:px-10 py-10" : ""}>
+      <section className={tone === "warn" ? "bg-night text-paper/85 px-6 sm:px-10 py-10" : ""}>
         {rubric && <p className={`rubric mb-2 ${tone === "warn" ? "!text-gold" : ""}`}>{rubric}</p>}
-        <h2 className={`h3 mb-5 ${tone === "warn" ? "text-ivory" : ""}`}>{title}</h2>
+        <h2 className={`h3 mb-5 ${tone === "warn" ? "text-paper" : ""}`}>{title}</h2>
         <ol className="space-y-4">
           {items.map((t, i) => (
             <li key={i} className="grid grid-cols-[2rem_1fr] gap-2 leading-relaxed">

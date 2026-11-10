@@ -48,7 +48,7 @@ export function SaveButton({ item }: { item: Omit<SavedItem, "savedAt"> }) {
       onClick={toggle}
       aria-pressed={saved}
       className={`inline-flex items-center gap-2 border px-3.5 py-2 text-[13px] transition-colors ${
-        saved ? "bg-ink text-ivory border-ink" : "rule hover:border-ink/50"
+        saved ? "bg-ink text-parchment border-ink" : "rule hover:border-ink/50"
       }`}
     >
       <svg viewBox="0 0 24 24" className="w-4 h-4" fill={saved ? "currentColor" : "none"} stroke="currentColor" strokeWidth="1.6" aria-hidden>

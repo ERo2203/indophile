@@ -64,7 +64,7 @@ export function DetailShell({
         <aside className="space-y-10 lg:sticky lg:top-24 self-start">
           {facts}
           {aside}
-          <p className="data text-[10px] text-stone-light leading-relaxed">
+          <p className="data text-[11px] text-stone-light leading-relaxed">
             Last revised {e.updated} · {e.editor}
             <br />
             <Link href="/methodology" className="underline decoration-dotted hover:text-terracotta">How we classify evidence</Link>

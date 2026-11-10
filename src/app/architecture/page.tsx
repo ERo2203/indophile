@@ -65,26 +65,26 @@ export default function ArchitecturePage() {
         })}
       </section>
 
-      <section className="bg-night text-ivory py-20">
+      <section className="bg-night text-paper py-20">
         <div className="container-ind">
           <p className="eyebrow !text-gold mb-3">Comparing traditions</p>
-          <h2 className="h2 text-ivory mb-10">Materials and forms across periods</h2>
+          <h2 className="h2 text-paper mb-10">Materials and forms across periods</h2>
           <div className="overflow-x-auto">
             <table className="w-full text-sm min-w-[720px]">
               <thead>
-                <tr className="border-b border-ivory/30 text-left">
-                  {["Tradition", "Period", "Principal materials", "Characteristic forms"].map((h) => <th key={h} className="eyebrow !text-ivory/50 py-3 pr-6">{h}</th>)}
+                <tr className="border-b border-paper/30 text-left">
+                  {["Tradition", "Period", "Principal materials", "Characteristic forms"].map((h) => <th key={h} className="eyebrow !text-paper/50 py-3 pr-6">{h}</th>)}
                 </tr>
               </thead>
               <tbody>
                 {COMPARE.map((r) => {
                   const e = getEntry(r.id);
                   return (
-                    <tr key={r.trad} className="border-b border-ivory/10 align-top">
+                    <tr key={r.trad} className="border-b border-paper/10 align-top">
                       <td className="py-4 pr-6 font-display text-xl">{e ? <Link href={hrefFor(e)} className="hover:text-gold">{r.trad}</Link> : r.trad}</td>
-                      <td className="py-4 pr-6 data text-[12px] text-ivory/70">{e?.dates ? <DateTag range={e.dates} className="!text-ivory/70" /> : "—"}</td>
-                      <td className="py-4 pr-6 text-ivory/80">{r.material}</td>
-                      <td className="py-4 text-ivory/80">{r.form}</td>
+                      <td className="py-4 pr-6 data text-[12px] text-paper/70">{e?.dates ? <DateTag range={e.dates} className="!text-paper/70" /> : "—"}</td>
+                      <td className="py-4 pr-6 text-paper/80">{r.material}</td>
+                      <td className="py-4 text-paper/80">{r.form}</td>
                     </tr>
                   );
                 })}

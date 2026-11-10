@@ -48,7 +48,7 @@ export function SiteArchive({ points, periods }: { points: PointFeature[]; perio
         </select>
         <div className="flex border rule" role="group" aria-label="View">
           {(["grid", "table"] as const).map((v) => (
-            <button key={v} onClick={() => setView(v)} aria-pressed={view === v} className={`px-3 py-2 data text-[11px] ${view === v ? "bg-ink text-ivory" : "text-stone"}`}>{v}</button>
+            <button key={v} onClick={() => setView(v)} aria-pressed={view === v} className={`px-3 py-2 data text-[11px] ${view === v ? "bg-ink text-parchment" : "text-stone"}`}>{v}</button>
           ))}
         </div>
       </div>
@@ -65,7 +65,7 @@ export function SiteArchive({ points, periods }: { points: PointFeature[]; perio
             <Link key={p.id} href={p.href} onMouseEnter={() => setSel(p.id)} className={`group card-ind flex flex-col ${sel === p.id ? "!border-terracotta" : ""}`}>
               <div className="relative aspect-[16/10] bg-sage-pale overflow-hidden plate">
                 {p.image ? <Image src={p.image.src} alt={p.title} fill sizes="25vw" className="object-cover" /> : (
-                  <div className="absolute inset-0 flex items-end p-3 data text-[10px] text-stone">{p.lat.toFixed(2)}°N {p.lng.toFixed(2)}°E</div>
+                  <div className="absolute inset-0 flex items-end p-3 data text-[11px] text-stone">{p.lat.toFixed(2)}°N {p.lng.toFixed(2)}°E</div>
                 )}
               </div>
               <div className="p-4 flex-1 flex flex-col">

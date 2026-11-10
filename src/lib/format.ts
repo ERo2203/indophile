@@ -48,6 +48,7 @@ export const POLITY_KIND: Record<PolityKind, string> = {
   sultanate: "Sultanate",
   confederacy: "Confederacy",
   colonial: "Colonial polity",
+  chiefdom: "Nayaka / subordinate lineage",
   "nation-state": "Nation-state",
 };
 

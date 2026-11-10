@@ -50,7 +50,7 @@ export default function AboutPage() {
                 ["Phase 4 — Expansion", "Medieval, early modern, colonial and modern history; advanced layers; user collections; community contributions.", false],
               ].map(([t, d, s]) => (
                 <li key={t as string} className="grid grid-cols-[1.5rem_1fr] gap-3">
-                  <span className={`mt-1.5 w-3 h-3 rounded-full border-2 ${s === true ? "bg-sage-deep border-sage-deep" : s === "partial" ? "border-sage-deep [background:linear-gradient(90deg,var(--color-sage-deep)_50%,transparent_50%)]" : "border-stone-light"}`} />
+                  <span className={`mt-1.5 w-3 h-3 rounded-full border-2 ${s === true ? "bg-sage-strong border-sage-deep" : s === "partial" ? "border-sage-deep [background:linear-gradient(90deg,var(--color-sage-deep)_50%,transparent_50%)]" : "border-stone-light"}`} />
                   <div><p className="font-display text-xl">{t}</p><p className="text-sm text-stone">{d}</p></div>
                 </li>
               ))}

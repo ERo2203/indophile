@@ -27,7 +27,7 @@ const RESEARCH: { id: string; kind: "Academic research" | "Institutional announc
 ];
 
 const KIND_STYLE: Record<string, string> = {
-  "Academic research": "bg-sage-deep text-ivory",
+  "Academic research": "bg-sage-strong text-paper",
   "Institutional announcement": "bg-gold/25 text-ink",
   "Excavation report": "bg-terracotta/15 text-terracotta-deep",
   "Editorial interpretation": "border border-ink/30 text-ink",
@@ -69,7 +69,7 @@ export default function Home() {
               Explore the people, civilisations, migrations, discoveries and ideas that shaped the Indian subcontinent over thousands of years.
             </p>
             <div className="mt-10 flex flex-wrap gap-3 rise rise-4">
-              <Link href="/explore" className="inline-flex items-center gap-3 bg-ink text-ivory px-6 py-3.5 text-sm tracking-wide hover:bg-terracotta transition-colors">
+              <Link href="/explore" className="inline-flex items-center gap-3 bg-ink text-parchment px-6 py-3.5 text-sm tracking-wide hover:bg-terracotta transition-colors">
                 Explore History <span aria-hidden>→</span>
               </Link>
               <Link href="/atlas" className="inline-flex items-center gap-3 border border-ink/30 px-6 py-3.5 text-sm tracking-wide hover:border-ink hover:bg-ivory transition-colors">
@@ -120,9 +120,9 @@ export default function Home() {
                 {p.image ? (
                   <Plate image={p.image} aspect="aspect-[3/2]" showCaption={false} sizes="340px" />
                 ) : (
-                  <div className="aspect-[3/2] bg-night text-ivory/40 flex items-end p-5 relative overflow-hidden">
-                    <span className="absolute -right-4 -top-6 font-display text-[9rem] leading-none text-ivory/[0.06]">{String(p.order).padStart(2, "0")}</span>
-                    <span className="data text-[10px] tracking-[0.18em] uppercase">{p.phase === 4 ? "In preparation · Phase 4" : ""}</span>
+                  <div className="aspect-[3/2] bg-night text-paper/40 flex items-end p-5 relative overflow-hidden">
+                    <span className="absolute -right-4 -top-6 font-display text-[9rem] leading-none text-paper/[0.06]">{String(p.order).padStart(2, "0")}</span>
+                    <span className="data text-[11px] tracking-[0.18em] uppercase">{p.phase === 4 ? "In preparation · Phase 4" : ""}</span>
                   </div>
                 )}
               </Link>
@@ -168,7 +168,7 @@ export default function Home() {
           <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 border-t border-l rule">
             {subjects.map((s, i) => (
               <Link key={s.id} href={hrefFor(s)} className="group relative border-r border-b rule p-6 sm:p-7 min-h-[190px] flex flex-col bg-ivory/40 hover:bg-ivory transition-colors">
-                <span className="data text-stone-light text-[10px]">{String(i + 1).padStart(2, "0")}</span>
+                <span className="data text-stone-light text-[11px]">{String(i + 1).padStart(2, "0")}</span>
                 <Glyph name={s.glyph} className="w-9 h-9 mt-3 text-sage-deep group-hover:text-terracotta transition-colors" />
                 <h3 className="font-display text-[1.4rem] leading-tight mt-auto pt-6">{s.title}</h3>
                 <p className="text-[13px] text-stone mt-1 leading-snug">{s.blurb}</p>
@@ -199,7 +199,7 @@ export default function Home() {
                 <Link key={e.id} href={hrefFor(e)} className="group grid grid-cols-[120px_1fr] sm:grid-cols-[140px_1fr] gap-5 pb-6 border-b rule">
                   <Plate image={e.image} aspect="aspect-square" showCaption={false} sizes="140px" />
                   <div>
-                    <p className="rubric !text-[10px]">{kicker}</p>
+                    <p className="rubric !text-[11px]">{kicker}</p>
                     <h3 className="font-display text-[1.4rem] leading-tight mt-1.5 group-hover:text-terracotta">{e.title}</h3>
                     <p className="text-[13px] text-stone mt-1.5 line-clamp-2">{e.summary}</p>
                     <DiscoveryMeta e={e} compact />
@@ -212,7 +212,7 @@ export default function Home() {
             {rest.slice(3).map(({ e, kicker }) => (
               <Link key={e.id} href={hrefFor(e)} className="group">
                 <Plate image={e.image} aspect="aspect-[3/2]" showCaption={false} sizes="(min-width:640px) 33vw, 100vw" />
-                <p className="rubric !text-[10px] mt-4">{kicker}</p>
+                <p className="rubric !text-[11px] mt-4">{kicker}</p>
                 <h3 className="font-display text-[1.5rem] leading-tight mt-1 group-hover:text-terracotta">{e.title}</h3>
                 <p className="text-[13px] text-stone mt-1.5 line-clamp-2">{e.summary}</p>
                 <DiscoveryMeta e={e} compact />
@@ -223,18 +223,18 @@ export default function Home() {
       </section>
 
       {/* ——— MAP PREVIEW */}
-      <section className="bg-night text-ivory pt-24" aria-labelledby="map-h">
+      <section className="bg-night text-paper pt-24" aria-labelledby="map-h">
         <div className="container-ind grid lg:grid-cols-[1fr_auto] gap-8 items-end mb-10">
           <div className="max-w-2xl">
             <p className="eyebrow !text-gold mb-3">The Historical Atlas</p>
-            <h2 id="map-h" className="h2 text-ivory">Move the slider. Watch the subcontinent change.</h2>
-            <p className="mt-4 text-ivory/65 leading-relaxed">
+            <h2 id="map-h" className="h2 text-paper">Scroll through time. Watch the subcontinent change.</h2>
+            <p className="mt-4 text-paper/65 leading-relaxed">
               Archaeological sites, inscriptions, ports, trade routes and modelled population movements — every point drawn from a sourced record. Territories are estimated from the find-spots of dated evidence, never hand-drawn.
             </p>
           </div>
         </div>
         <div className="container-ind pb-24">
-          <div className="border border-ivory/15 text-ink">
+          <div className="border border-paper/15 text-ink">
             <AtlasExplorer payload={mapPayload()} variant="preview" defaultYear={-250} />
           </div>
         </div>
@@ -249,7 +249,7 @@ export default function Home() {
             <p className="mt-4 text-stone leading-relaxed">Every item is labelled by what it is. Peer-reviewed research, institutional announcements, excavation reports and our own editorial interpretation are never mixed together.</p>
             <ul className="mt-8 space-y-2">
               {Object.entries(KIND_STYLE).map(([k, cls]) => (
-                <li key={k} className="flex items-center gap-3 text-sm"><span className={`data text-[10px] px-2 py-0.5 ${cls}`}>{k}</span></li>
+                <li key={k} className="flex items-center gap-3 text-sm"><span className={`data text-[11px] px-2 py-0.5 ${cls}`}>{k}</span></li>
               ))}
             </ul>
           </div>
@@ -261,7 +261,7 @@ export default function Home() {
               return (
                 <li key={r.id}>
                   <Link href={hrefFor(e)} className="group grid sm:grid-cols-[10rem_1fr_auto] gap-x-6 gap-y-2 py-6 border-b rule items-baseline">
-                    <span className={`data text-[10px] px-2 py-0.5 justify-self-start ${KIND_STYLE[r.kind]}`}>{r.kind}</span>
+                    <span className={`data text-[11px] px-2 py-0.5 justify-self-start ${KIND_STYLE[r.kind]}`}>{r.kind}</span>
                     <span>
                       <span className="font-display text-[1.45rem] leading-tight group-hover:text-terracotta">{e.title}</span>
                       {src && <span className="block data text-stone mt-1">{citeLabel(src.authors, src.year)} · {src.container ?? src.publisher}</span>}
@@ -306,7 +306,7 @@ function DiscoveryMeta({ e, compact = false }: { e: Entry; compact?: boolean }) 
       {loc && !compact && <span className="data text-stone">◇ {loc}</span>}
       {!compact && <EvidenceBadge level={e.evidence} />}
       {srcs.length > 0 && (
-        <span className="data text-[10px] text-stone-light">
+        <span className="data text-[11px] text-stone-light">
           {srcs.map((s) => citeLabel(s!.authors, s!.year)).join(" · ")}
         </span>
       )}

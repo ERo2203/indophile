@@ -35,7 +35,11 @@ export function validateEntry(e: Entry): Issue[] {
   for (const rid of e.related ?? []) if (!getEntryAnyStatus(rid)) push("warning", `Dangling relation to "${rid}".`);
   for (const pid of e.periods ?? []) if (!getEntryAnyStatus(pid)) push("error", `Unknown period "${pid}".`);
   if (e.image && !getImage(e.image.id)) push("error", `Image "${e.image.id}" has no attribution record.`);
-  if (e.type === "polity" && e.extent && e.extent.evidence.length < 3) push("warning", "Territory needs at least three evidence find-spots.");
+  if (e.type === "polity" && e.extent) {
+    const n = (e.extent.evidence?.length ?? 0) + (e.extent.anchors?.length ?? 0) + (e.extent.zones?.flat().length ?? 0);
+    if (n === 0) push("error", "Territory has no located evidence.");
+    for (const id of e.extent.evidence ?? []) if (!getEntryAnyStatus(id)) push("error", `Territory evidence "${id}" does not exist.`);
+  }
   if (e.type === "collection") for (const i of e.items) if (!getEntryAnyStatus(i.id)) push("error", `Collection item "${i.id}" does not exist.`);
   if (!e.dates && !["subject", "concept", "collection"].includes(e.type)) push("warning", "No date range.");
 

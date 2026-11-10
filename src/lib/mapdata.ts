@@ -4,10 +4,10 @@
  * the map only receives ids, coordinates, dates, layers and short labels.
  */
 import type { MapPayload, PointFeature, RouteFeature } from "./maptypes";
+import type { MapLayer } from "./types";
 export * from "./maptypes";
-import { allEntries, entriesOfType, getImage, hrefFor } from "./db";
+import { allEntries, entriesOfType, getImage, getPeriods, hrefFor, regionOf } from "./db";
 import { formatRange } from "./format";
-import { territoryFor } from "./geo";
 
 export function buildMapPayload(): MapPayload {
   const points: PointFeature[] = entriesOfType("site").map((s) => ({
@@ -37,6 +37,7 @@ export function buildMapPayload(): MapPayload {
     excavations: s.excavations?.map((x) => `${x.years} — ${x.by}`).join("; "),
     unesco: s.unesco?.year,
     related: s.related ?? [],
+    tradition: s.tradition?.[0],
   }));
 
   const routes: RouteFeature[] = entriesOfType("route").map((r) => ({
@@ -54,15 +55,57 @@ export function buildMapPayload(): MapPayload {
     evidence: r.evidence,
   }));
 
-  const territories = entriesOfType("polity")
-    .map((p) => {
-      const t = territoryFor(p);
-      return t ? { ...t, href: hrefFor(p), dateLabel: formatRange(p.dates), kind: p.kind } : undefined;
-    })
-    .filter((t): t is NonNullable<typeof t> => !!t);
+  const territories = entriesOfType("polity").map((p) => ({
+    polityId: p.id,
+    title: p.title,
+    href: hrefFor(p),
+    dateLabel: formatRange(p.dates),
+    kind: p.kind,
+    region: regionOf(p.id),
+    start: p.dates?.start ?? -1e9,
+    end: p.dates?.end ?? p.dates?.start ?? 1e9,
+  }));
+
+  // Inscriptions, temples and other monuments that locate a polity become map points too.
+  for (const pol of entriesOfType("polity")) {
+    const all = [...(pol.extent?.anchors ?? []), ...(pol.extent?.zones ?? []).flat()];
+    for (const [i, an] of all.entries()) {
+      const role = (an.role ?? "").toLowerCase();
+      const layers: MapLayer[] = [];
+      if (role.includes("inscription") || role.includes("copper plate") || role.includes("pillar")) layers.push("inscription");
+      if (/(temple|mosque|monaster|stupa|shrine|cave|colossus|dargah|tomb|mausoleum)/.test(role)) layers.push("temple");
+      if (!layers.length) continue;
+      points.push({
+        id: `${pol.id}~${i}`,
+        title: an.name,
+        lat: an.lat,
+        lng: an.lng,
+        layers,
+        start: an.from ?? pol.dates?.start ?? -1e9,
+        end: an.to ?? pol.dates?.end ?? pol.dates?.start ?? 1e9,
+        dateLabel: an.from !== undefined ? `${formatRange({ start: an.from, end: an.to, precision: "approximate" })}` : formatRange(pol.dates),
+        precision: "approximate",
+        modern: an.role ?? "",
+        country: "",
+        summary: `${an.role ? an.role[0].toUpperCase() + an.role.slice(1) : "Monument"} — locates ${pol.title}.`,
+        href: hrefFor(pol),
+        periods: pol.periods ?? [],
+        related: [pol.id],
+        polityId: pol.id,
+      });
+    }
+  }
 
   const index = Object.fromEntries(allEntries().map((e) => [e.id, { t: e.title, h: hrefFor(e) }]));
-  return { index, points, routes, territories };
+  const periods = getPeriods().map((p) => ({
+    id: p.id,
+    title: p.title,
+    start: p.dates?.start ?? 0,
+    end: p.dates?.end ?? p.dates?.start ?? 0,
+    href: hrefFor(p),
+    precision: p.dates?.precision ?? "approximate",
+  }));
+  return { index, periods, points, routes, territories };
 }
 
 
@@ -82,7 +125,3 @@ export function routesFor(ids: string[]): RouteFeature[] {
   return mapPayload().routes.filter((r) => set.has(r.id));
 }
 
-export function territoriesFor(ids: string[]) {
-  const set = new Set(ids);
-  return mapPayload().territories.filter((t) => set.has(t.polityId));
-}

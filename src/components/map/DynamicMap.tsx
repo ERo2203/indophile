@@ -6,7 +6,7 @@ import type { MapCanvasProps } from "./MapCanvas";
 const MapCanvas = dynamic(() => import("./MapCanvas"), {
   ssr: false,
   loading: () => (
-    <div className="absolute inset-0 flex items-center justify-center bg-[#e9e3d4]">
+    <div className="absolute inset-0 flex items-center justify-center bg-[var(--map-sea)]">
       <span className="data text-stone animate-pulse">Loading atlas…</span>
     </div>
   ),

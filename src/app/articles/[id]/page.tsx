@@ -63,7 +63,7 @@ export default async function ArticlePage({ params }: { params: Promise<{ id: st
               {s.kind === "map-check" && points.length > 0 && (
                 <div className="mt-6">
                   <MiniMap points={points} className="h-[400px]" />
-                  <p className="mt-2 data text-[10px] text-stone">Select a site to open its record.</p>
+                  <p className="mt-2 data text-[11px] text-stone">Select a site to open its record.</p>
                 </div>
               )}
             </EditorialSection>

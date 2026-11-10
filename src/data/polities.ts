@@ -482,7 +482,4 @@ export const polities: PolityEntry[] = [
     cite: [c("singh-2008")],
     sections: [],
   },
-  // ——— Drafts awaiting sources (visible only in the editorial dashboard)
-  { ...base, status: "draft", id: "maratha-confederacy", kind: "confederacy", title: "Maratha Confederacy", summary: "Draft — awaiting sourced overview.", dates: d(1674, 1818, "conventional"), periods: ["regional-powers"], cite: [], sections: [] },
-  { ...base, status: "in-review", id: "ahom-kingdom", kind: "kingdom", title: "Ahom Kingdom", summary: "A kingdom of the Brahmaputra valley founded in the 13th century, known for its chronicles (buranjis).", dates: d(1228, 1826, "conventional"), periods: ["regional-kingdoms"], cite: [], sections: [] },
 ];

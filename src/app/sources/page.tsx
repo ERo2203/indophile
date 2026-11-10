@@ -46,7 +46,7 @@ export default function SourcesPage() {
                         {s.container && <>. {s.container}</>}{s.publisher && <>. {s.publisher}</>}.
                         {s.doi && <> <a href={`https://doi.org/${s.doi}`} className="data text-terracotta hover:underline" target="_blank" rel="noopener noreferrer">doi:{s.doi}</a></>}
                         {s.url && <> <a href={s.url} className="data text-terracotta hover:underline" target="_blank" rel="noopener noreferrer">{s.url.replace(/^https?:\/\//, "")}</a></>}
-                        {!s.verified && <span className="ml-2 data text-[10px] text-terracotta border border-terracotta/40 px-1">record unverified</span>}
+                        {!s.verified && <span className="ml-2 data text-[11px] text-terracotta border border-terracotta/40 px-1">record unverified</span>}
                       </p>
                       <details className="text-[13px]">
                         <summary className="cursor-pointer data text-stone hover:text-ink">Cited by {cited.length} entr{cited.length === 1 ? "y" : "ies"}</summary>

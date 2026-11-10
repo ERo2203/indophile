@@ -91,7 +91,7 @@ export function TimelineExplorer({ items, bands }: { items: TimelineItem[]; band
                   style={{ left: `${l}%`, width: `${r - l}%`, top: `${(i % 4) * 30 + 8}px` }}
                 >
                   <span className={`block h-full ${b.phase === 4 ? "bg-stone-light/60" : "bg-terracotta/70"} group-hover:bg-ink ${b.precision === "debated" || b.precision === "approximate" ? "[mask-image:linear-gradient(90deg,transparent,#000_18%,#000_82%,transparent)]" : ""}`} />
-                  <span className="absolute left-0 top-[16px] data text-[9.5px] whitespace-nowrap text-stone group-hover:text-ink">{b.title.split(" and ")[0]}</span>
+                  <span className="absolute left-0 top-[16px] data text-[11px] whitespace-nowrap text-stone group-hover:text-ink">{b.title.split(" and ")[0]}</span>
                 </Link>
               );
             })}
@@ -101,13 +101,13 @@ export function TimelineExplorer({ items, bands }: { items: TimelineItem[]; band
           </div>
           <div className="relative h-5 mt-2 border-t rule">
             {[-1_500_000, -10000, -5000, -3500, -2000, -500, 1, 700, 1200, 1947].map((y) => (
-              <span key={y} className="absolute top-1.5 -translate-x-1/2 data text-[9.5px] text-stone whitespace-nowrap" style={{ left: `${xOf(y)}%` }}>
+              <span key={y} className="absolute top-1.5 -translate-x-1/2 data text-[11px] text-stone whitespace-nowrap" style={{ left: `${xOf(y)}%` }}>
                 {y === 1 ? "1 CE" : y < -10000 ? "1.5 Ma" : formatYear(y).replace(" years ago", "")}
               </span>
             ))}
           </div>
         </div>
-        <p className="mt-2 data text-[10px] text-stone-light">Scale is compressed for deep time. Faded band ends mark approximate or debated boundaries.</p>
+        <p className="mt-2 data text-[11px] text-stone-light">Scale is compressed for deep time. Faded band ends mark approximate or debated boundaries.</p>
       </div>
 
       {/* Filters */}
@@ -117,7 +117,7 @@ export function TimelineExplorer({ items, bands }: { items: TimelineItem[]; band
             <span className="eyebrow mr-2">Range</span>
             {PRESETS.map((p, i) => (
               <button key={p.label} onClick={() => setPreset(i)} aria-pressed={preset === i}
-                className={`data text-[11px] px-2.5 py-1 border ${preset === i ? "bg-ink text-ivory border-ink" : "rule text-stone hover:text-ink"}`}>
+                className={`data text-[11px] px-2.5 py-1 border ${preset === i ? "bg-ink text-parchment border-ink" : "rule text-stone hover:text-ink"}`}>
                 {p.label}
               </button>
             ))}
@@ -130,7 +130,7 @@ export function TimelineExplorer({ items, bands }: { items: TimelineItem[]; band
                   className={`text-[12px] px-2.5 py-1 border-y border-l ${cats.has(c.id) ? "bg-sage-pale border-sage/50 text-sage-deep" : "rule text-stone-light line-through"}`}>
                   {c.label}
                 </button>
-                <button onClick={() => only(c.id)} className="text-[10px] data px-1.5 border rule text-stone hover:text-terracotta" title={`Show only ${c.label}`} aria-label={`Show only ${c.label}`}>only</button>
+                <button onClick={() => only(c.id)} className="text-[11px] data px-1.5 border rule text-stone hover:text-terracotta" title={`Show only ${c.label}`} aria-label={`Show only ${c.label}`}>only</button>
               </span>
             ))}
             <button onClick={() => setCats(new Set(CATS.map((c) => c.id)))} className="data text-[11px] text-terracotta ml-2 hover:underline">reset</button>
@@ -158,8 +158,8 @@ export function TimelineExplorer({ items, bands }: { items: TimelineItem[]; band
                     <span className="absolute -left-[41px] top-1 w-[17px] text-center text-terracotta bg-parchment leading-none text-lg" title={it.precision}>{MARK[it.precision]}</span>
                     <div className="flex flex-wrap items-baseline gap-x-3 gap-y-1">
                       <span className="data text-ink">{it.dateLabel}</span>
-                      <span className="data text-[10px] uppercase tracking-wider text-stone">{CATS.find((c) => c.id === it.category)?.label}</span>
-                      {it.precision !== "secure" && <span className="data text-[10px] text-stone-light">({it.precision})</span>}
+                      <span className="data text-[11px] uppercase tracking-wider text-stone">{CATS.find((c) => c.id === it.category)?.label}</span>
+                      {it.precision !== "secure" && <span className="data text-[11px] text-stone-light">({it.precision})</span>}
                     </div>
                     <h3 className="font-display text-[1.6rem] leading-tight mt-1.5">
                       <Link href={it.href} className="hover:text-terracotta">{it.title}</Link>
@@ -171,7 +171,7 @@ export function TimelineExplorer({ items, bands }: { items: TimelineItem[]; band
                       {it.related.map((r) => (
                         <Link key={r.id} href={r.href} className="text-[12px] text-sage-deep hover:text-terracotta link-ind">↳ {r.title}</Link>
                       ))}
-                      {it.sources.length > 0 && <span className="data text-[10px] text-stone-light">{it.sources.join(" · ")}</span>}
+                      {it.sources.length > 0 && <span className="data text-[11px] text-stone-light">{it.sources.join(" · ")}</span>}
                     </div>
                   </li>
                 ))}

@@ -5,8 +5,9 @@ import { DetailShell } from "@/components/DetailShell";
 import { MiniMap } from "@/components/map/MiniMap";
 import { ArrowLink, CompactRow, EditorialSection, EntryCard, FactTable, DateTag } from "@/components/ui";
 import { getEntry, getPeriods, hrefFor, inPeriod } from "@/lib/db";
-import { pointsFor, mapPayload } from "@/lib/mapdata";
-import { PRECISION } from "@/lib/format";
+import { pointsFor } from "@/lib/mapdata";
+import { PRECISION, formatYear } from "@/lib/format";
+import { CONCLUSIONS } from "@/data/conclusions";
 
 export function generateStaticParams() {
   return getPeriods().map((p) => ({ id: p.id }));
@@ -32,7 +33,6 @@ export default async function PeriodPage({ params }: { params: Promise<{ id: str
   const artefacts = inPeriod(id, ["artefact", "script", "study", "article"]);
   const midYear = Math.round(((p.dates?.start ?? 0) + (p.dates?.end ?? p.dates?.start ?? 0)) / 2);
   const atlasYear = Math.max(midYear, -10000);
-  const territories = mapPayload().territories.filter((t) => polities.some((x) => x.id === t.polityId));
 
   return (
     <DetailShell
@@ -79,8 +79,8 @@ export default async function PeriodPage({ params }: { params: Promise<{ id: str
         <section>
           <p className="rubric mb-2">The Map Check</p>
           <h2 className="h3 mb-5">Where this period happened</h2>
-          <MiniMap points={pointsFor(sites.map((s) => s.id))} territories={territories} className="h-[440px]" />
-          <p className="mt-2 data text-[10px] text-stone">Click a point to open its record. Territories are estimates derived from dated find-spots.</p>
+          <MiniMap points={pointsFor(sites.map((s) => s.id))} boundaries={{ year: atlasYear }} className="h-[440px]" />
+          <p className="mt-2 data text-[11px] text-stone">Click a point to open its record. Boundaries at {formatYear(atlasYear)} from Cliopatria (Seshat), CC BY 4.0.</p>
         </section>
       )}
 
@@ -126,6 +126,32 @@ export default async function PeriodPage({ params }: { params: Promise<{ id: str
             </div>
           )}
         </section>
+      )}
+
+      {CONCLUSIONS[id] && (
+        <section className="grid md:grid-cols-2 gap-px bg-[var(--color-rule)] border rule">
+          <div className="bg-ivory p-7">
+            <p className="rubric mb-2">Conclusions</p>
+            <h2 className="h3 mb-4">What the evidence supports</h2>
+            <ul className="space-y-3 text-[15px] leading-relaxed list-disc pl-5 marker:text-sage-deep">
+              {CONCLUSIONS[id].known.map((k) => <li key={k}>{k}</li>)}
+            </ul>
+          </div>
+          <div className="bg-night text-paper/85 p-7">
+            <p className="rubric !text-gold mb-2">Still open</p>
+            <h2 className="h3 text-paper mb-4">What we still don&apos;t know</h2>
+            <ul className="space-y-3 text-[15px] leading-relaxed list-disc pl-5 marker:text-gold">
+              {CONCLUSIONS[id].open.map((k) => <li key={k}>{k}</li>)}
+            </ul>
+          </div>
+        </section>
+      )}
+
+      {id === "prehistory" && (
+        <Link href="/deep-time" className="group block bg-sage-pale/60 border border-sage/40 p-6">
+          <p className="eyebrow !text-sage-deep">Go further back</p>
+          <p className="font-display text-2xl mt-1 group-hover:text-terracotta">Deep time: dinosaurs, the Deccan Traps and the Narmada skull cap →</p>
+        </Link>
       )}
 
       <nav className="grid grid-cols-2 gap-4 border-t rule pt-8" aria-label="Adjacent periods">

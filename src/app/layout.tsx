@@ -4,6 +4,7 @@ import "./globals.css";
 import { SiteHeader } from "@/components/SiteHeader";
 import { SiteFooter } from "@/components/SiteFooter";
 import { assertPublishedValid } from "@/lib/validate";
+import { THEME_BOOT } from "@/components/ThemeToggle";
 
 const cormorant = Cormorant_Garamond({
   variable: "--font-cormorant",
@@ -24,9 +25,12 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
   // Unsupported published claims break the build, not just the dashboard.
   if (process.env.NODE_ENV === "production") assertPublishedValid();
   return (
-    <html lang="en" className={`${cormorant.variable} ${inter.variable} ${plex.variable}`}>
+    <html lang="en" className={`${cormorant.variable} ${inter.variable} ${plex.variable}`} suppressHydrationWarning>
+      <head>
+        <script dangerouslySetInnerHTML={{ __html: THEME_BOOT }} />
+      </head>
       <body className="min-h-screen flex flex-col">
-        <a href="#main" className="sr-only focus:not-sr-only focus:fixed focus:top-2 focus:left-2 focus:z-[100] bg-ink text-ivory px-3 py-2">
+        <a href="#main" className="sr-only focus:not-sr-only focus:fixed focus:top-2 focus:left-2 focus:z-[100] bg-ink text-parchment px-3 py-2">
           Skip to content
         </a>
         <SiteHeader />

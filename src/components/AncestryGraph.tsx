@@ -47,7 +47,7 @@ export function AncestryGraph() {
         <desc id="ag-desc">Qualitative diagram: AASI-related and Iranian-related ancestry combine in the Indus Periphery group; Indus Periphery combines with AASI to form the ASI model, and with steppe-related ancestry to form the ANI model; present-day populations fit as ANI–ASI mixtures. No proportions are shown.</desc>
         <defs>
           <marker id="ah" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
-            <path d="M0 0 10 5 0 10z" fill="#4E5B45" />
+            <path d="M0 0 10 5 0 10z" style={{ fill: "var(--color-sage-deep)" }} />
           </marker>
         </defs>
         {EDGES.map((e, i) => {
@@ -56,19 +56,19 @@ export function AncestryGraph() {
           const my = (y1 + y2) / 2;
           return (
             <path key={i} d={`M${x1} ${y1} C ${x1} ${my}, ${x2} ${my}, ${x2} ${y2 - 4}`} fill="none"
-              stroke={active(e) ? "#A65D43" : "#4E5B45"} strokeOpacity={hover && !active(e) ? 0.2 : 0.85}
+              style={{ stroke: active(e) ? "var(--color-terracotta)" : "var(--color-sage-deep)" }} strokeOpacity={hover && !active(e) ? 0.2 : 0.85}
               strokeWidth={active(e) ? 2.4 : 1.5} strokeDasharray={e.basis === "model" ? "5 5" : undefined} markerEnd="url(#ah)" />
           );
         })}
         {NODES.map((n) => {
           const w = n.kind === "present" ? 280 : W;
-          const fill = n.kind === "observed" ? "#4E5B45" : n.kind === "present" ? "#24231F" : "#FAF8F2";
-          const text = n.kind === "observed" || n.kind === "present" ? "#FAF8F2" : "#24231F";
+          const fill = n.kind === "observed" ? "var(--color-sage-strong)" : n.kind === "present" ? "var(--color-night)" : "var(--color-ivory)";
+          const text = n.kind === "observed" || n.kind === "present" ? "var(--color-paper)" : "var(--color-ink)";
           return (
             <a key={n.id} href={n.href} onMouseEnter={() => setHover(n.id)} onMouseLeave={() => setHover(null)} onFocus={() => setHover(n.id)} onBlur={() => setHover(null)}>
-              <rect x={n.x} y={n.y} width={w} height={H} fill={fill} stroke={n.kind === "model" ? "#A65D43" : "#4E5B45"} strokeDasharray={n.kind === "model" || n.kind === "source" ? "4 3" : undefined} />
-              <text x={n.x + 12} y={n.y + 23} fontFamily="var(--font-cormorant)" fontSize="19" fill={text}>{n.label}</text>
-              <text x={n.x + 12} y={n.y + 41} fontFamily="var(--font-plex-mono)" fontSize="9.5" fill={text} opacity="0.7">{n.sub}</text>
+              <rect x={n.x} y={n.y} width={w} height={H} style={{ fill, stroke: n.kind === "model" ? "var(--color-terracotta)" : "var(--color-sage-deep)" }} strokeDasharray={n.kind === "model" || n.kind === "source" ? "4 3" : undefined} />
+              <text x={n.x + 12} y={n.y + 23} fontFamily="var(--font-cormorant)" fontSize="19" style={{ fill: text }}>{n.label}</text>
+              <text x={n.x + 12} y={n.y + 41} fontFamily="var(--font-plex-mono)" fontSize="11" style={{ fill: text }} opacity="0.8">{n.sub}</text>
             </a>
           );
         })}
@@ -78,7 +78,7 @@ export function AncestryGraph() {
           <p className="eyebrow">Legend</p>
           <p className="flex items-center gap-3"><span className="w-8 border-t-2 border-sage-deep" /> Observed directly in ancient genomes</p>
           <p className="flex items-center gap-3"><span className="w-8 border-t-2 border-dashed border-sage-deep" /> Statistical model / inference</p>
-          <p className="flex items-center gap-3"><span className="w-6 h-4 bg-sage-deep" /> Population with sequenced individuals</p>
+          <p className="flex items-center gap-3"><span className="w-6 h-4 bg-sage-strong" /> Population with sequenced individuals</p>
           <p className="flex items-center gap-3"><span className="w-6 h-4 border border-dashed border-terracotta" /> Modelled construct, never sampled</p>
         </div>
         <div className="min-h-[120px]" aria-live="polite">
@@ -88,7 +88,7 @@ export function AncestryGraph() {
             <p className="text-stone italic font-display text-lg">Hover or focus a box to see how each link is supported.</p>
           )}
         </div>
-        <p className="data text-[10px] text-stone leading-relaxed">
+        <p className="data text-[11px] text-stone leading-relaxed">
           No admixture proportions are drawn here. Published proportions vary by group and by model; see each study for its own figures. <Link href="/methodology#genetics" className="underline">Why we do this</Link>.
         </p>
       </div>

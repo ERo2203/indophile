@@ -4,6 +4,7 @@ import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { Wordmark } from "./Logo";
+import { ThemeToggle } from "./ThemeToggle";
 
 const NAV = [
   { href: "/explore", label: "Explore" },
@@ -50,13 +51,13 @@ export function SiteHeader() {
         scrolled || immersive || open ? "bg-parchment/92 backdrop-blur-md border-b rule" : "bg-transparent border-b border-transparent"
       }`}
     >
-      <div className="container-ind flex h-16 items-center justify-between gap-6">
+      <div className="container-ind flex h-16 items-center justify-between gap-4 xl:gap-6">
         <Link href="/" aria-label="Indophile home" className="shrink-0 text-ink">
           <Wordmark />
         </Link>
 
         <nav aria-label="Primary" className="hidden lg:block">
-          <ul className="flex items-center gap-7">
+          <ul className="flex items-center gap-5 xl:gap-7">
             {NAV.map((n) => (
               <li key={n.href}>
                 <Link
@@ -73,7 +74,7 @@ export function SiteHeader() {
           </ul>
         </nav>
 
-        <div className="flex items-center gap-4">
+        <div className="flex items-center gap-3 xl:gap-4">
           <Link
             href="/search"
             className="group flex items-center gap-2 text-stone hover:text-ink"
@@ -83,12 +84,13 @@ export function SiteHeader() {
               <circle cx="10.5" cy="10.5" r="6.5" />
               <path d="m15.5 15.5 5 5" strokeLinecap="round" />
             </svg>
-            <kbd className="hidden xl:inline data text-[10px] border rule px-1.5 py-0.5 text-stone-light group-hover:text-stone">⌘K</kbd>
+            <kbd className="hidden xl:inline data text-[11px] border rule px-1.5 py-0.5 text-stone-light group-hover:text-stone">⌘K</kbd>
           </Link>
-          <Link href="/about" className={`hidden sm:inline text-[0.86rem] ${active("/about") ? "text-ink" : "text-stone hover:text-ink"}`}>
+          <Link href="/about" className={`hidden sm:inline lg:hidden xl:inline text-[0.86rem] ${active("/about") ? "text-ink" : "text-stone hover:text-ink"}`}>
             About
           </Link>
-          <Link href="/reading-list" aria-label="Your reading list" className="hidden sm:flex w-8 h-8 items-center justify-center rounded-full border rule text-stone hover:text-ink hover:border-ink/40">
+          <ThemeToggle />
+          <Link href="/reading-list" aria-label="Your reading list" className="hidden sm:flex w-9 h-9 items-center justify-center rounded-full border rule text-stone hover:text-ink hover:border-ink/40">
             <svg viewBox="0 0 24 24" className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth="1.6" aria-hidden>
               <path d="M6 3.5h12v17l-6-4-6 4z" strokeLinejoin="round" />
             </svg>

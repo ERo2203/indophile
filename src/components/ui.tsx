@@ -7,7 +7,7 @@ import { TYPE_LABEL, getEntry, getImage, getSource, hrefFor } from "@/lib/db";
 /* ——— Evidence & dating */
 
 const EVIDENCE_STYLE: Record<Evidence, string> = {
-  established: "bg-sage-deep text-ivory border-sage-deep",
+  established: "bg-sage-strong text-paper border-sage-deep",
   "well-supported": "bg-sage-pale text-sage-deep border-sage/40",
   debated: "bg-transparent text-terracotta-deep border-terracotta/50",
   hypothesis: "bg-transparent text-stone border-dashed border-stone/60",
@@ -20,7 +20,7 @@ export function EvidenceBadge({ level, compact = false }: { level?: Evidence; co
   return (
     <span
       title={`${e.label}: ${e.note}`}
-      className={`inline-flex items-center gap-1.5 border px-2 py-[3px] data text-[10px] uppercase tracking-[0.12em] whitespace-nowrap ${EVIDENCE_STYLE[level]}`}
+      className={`inline-flex items-center gap-1.5 border px-2 py-[3px] data text-[11px] uppercase tracking-[0.12em] whitespace-nowrap ${EVIDENCE_STYLE[level]}`}
     >
       <EvidenceGlyph level={level} />
       {!compact && e.label}
@@ -114,7 +114,7 @@ export function Plate({
         <Image src={rec.src} alt={image.caption} fill sizes={sizes} priority={priority} className="object-cover" />
       </div>
       {showCaption && (
-        <figcaption className={`mt-2.5 flex flex-col gap-0.5 text-[0.8rem] leading-snug ${dark ? "text-ivory/70" : "text-stone"}`}>
+        <figcaption className={`mt-2.5 flex flex-col gap-0.5 text-[0.8rem] leading-snug ${dark ? "text-paper/70" : "text-stone"}`}>
           <span>{image.caption}</span>
           <Credit id={image.id} dark={dark} />
         </figcaption>
@@ -127,7 +127,7 @@ export function Credit({ id, dark = false }: { id: string; dark?: boolean }) {
   const rec = getImage(id);
   if (!rec) return null;
   return (
-    <span className={`data text-[10px] ${dark ? "text-ivory/45" : "text-stone-light"}`}>
+    <span className={`data text-[11px] ${dark ? "text-paper/45" : "text-stone-light"}`}>
       Photo: {rec.artist || "Unknown"} ·{" "}
       <a href={rec.sourceUrl} target="_blank" rel="noopener noreferrer" className="underline decoration-dotted underline-offset-2 hover:text-terracotta">
         {rec.license} via Wikimedia Commons
@@ -207,17 +207,17 @@ export function EditorialSection({ s, index, dropcap = false, children }: { s: S
   return (
     <section
       id={s.heading.toLowerCase().replace(/[^a-z]+/g, "-")}
-      className={`scroll-mt-24 ${isUnknown ? "bg-night text-ivory/85 -mx-4 sm:mx-0 px-6 sm:px-10 py-10" : ""} ${s.kind === "dna" ? "border-l-2 border-sage pl-6 sm:pl-8" : ""}`}
+      className={`scroll-mt-24 ${isUnknown ? "bg-night text-paper/85 -mx-4 sm:mx-0 px-6 sm:px-10 py-10" : ""} ${s.kind === "dna" ? "border-l-2 border-sage pl-6 sm:pl-8" : ""}`}
     >
       <header className="mb-5">
         {r && <p className={`rubric mb-2 ${isUnknown ? "!text-gold" : ""}`}>{index !== undefined ? `${String(index + 1).padStart(2, "0")} · ` : ""}{r.label}</p>}
         <div className="flex flex-wrap items-baseline gap-x-4 gap-y-2">
-          <h2 className={`h3 ${isUnknown ? "text-ivory" : ""}`}>{s.heading}</h2>
+          <h2 className={`h3 ${isUnknown ? "text-paper" : ""}`}>{s.heading}</h2>
           <EvidenceBadge level={s.evidence} />
         </div>
-        {r && <p className={`mt-1 text-sm italic font-display ${isUnknown ? "text-ivory/50" : "text-stone"}`}>{r.tag}</p>}
+        {r && <p className={`mt-1 text-sm italic font-display ${isUnknown ? "text-paper/50" : "text-stone"}`}>{r.tag}</p>}
       </header>
-      <div className={`prose-ind ${isUnknown ? "!text-ivory/80" : ""}`}>
+      <div className={`prose-ind ${isUnknown ? "!text-paper/80" : ""}`}>
         {s.body.map((para, i) => (
           <p key={i} className={dropcap && i === 0 ? "dropcap" : ""}>{para}</p>
         ))}
@@ -230,7 +230,7 @@ export function EditorialSection({ s, index, dropcap = false, children }: { s: S
 
 export function InlineCites({ cites, dark = false }: { cites: Citation[]; dark?: boolean }) {
   return (
-    <p className={`mt-4 data text-[11px] ${dark ? "text-ivory/45" : "text-stone"}`}>
+    <p className={`mt-4 data text-[11px] ${dark ? "text-paper/45" : "text-stone"}`}>
       <span className="uppercase tracking-[0.14em] mr-2">Sources</span>
       {cites.map((c, i) => {
         const s = getSource(c.sourceId);
@@ -258,7 +258,7 @@ export function SourceList({ sources, title = "Sources & further reading" }: { s
       <ol className="space-y-4">
         {sources.map((s) => (
           <li key={s.id} id={`src-${s.id}`} className="grid grid-cols-[auto_1fr] gap-4 text-sm leading-relaxed scroll-mt-28 target:bg-gold/15">
-            <span className="data text-[10px] uppercase tracking-wider text-stone pt-1 w-24">{s.kind.replace(/-/g, " ")}</span>
+            <span className="data text-[11px] uppercase tracking-wider text-stone pt-1 w-24">{s.kind.replace(/-/g, " ")}</span>
             <span>
               {s.authors} ({s.year}). <em className="font-display text-[1.05rem]">{s.title}</em>
               {s.container && <>. {s.container}</>}
@@ -269,7 +269,7 @@ export function SourceList({ sources, title = "Sources & further reading" }: { s
               {s.url && (
                 <> <a className="data text-terracotta hover:underline" href={s.url} target="_blank" rel="noopener noreferrer">{s.url.replace(/^https?:\/\//, "")}</a></>
               )}
-              {!s.verified && <span className="ml-2 data text-[10px] text-terracotta border border-terracotta/40 px-1">record unverified</span>}
+              {!s.verified && <span className="ml-2 data text-[11px] text-terracotta border border-terracotta/40 px-1">record unverified</span>}
             </span>
           </li>
         ))}

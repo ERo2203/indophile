@@ -4,7 +4,9 @@ import { AncestryGraph } from "@/components/AncestryGraph";
 import { MiniMap } from "@/components/map/MiniMap";
 import { EditorialSection, EvidenceBadge, Plate, SectionHead } from "@/components/ui";
 import { entriesOfType, hrefFor } from "@/lib/db";
-import { routesFor } from "@/lib/mapdata";
+import { routesFor, mapPayload } from "@/lib/mapdata";
+import { AncestryCalculator } from "@/components/AncestryCalculator";
+import { SPECIMENS } from "@/data/specimens";
 import type { PointFeature } from "@/lib/maptypes";
 
 export const metadata: Metadata = {
@@ -31,23 +33,23 @@ export default function GeneticsPage() {
 
   return (
     <div>
-      <header className="bg-night text-ivory">
+      <header className="bg-night text-paper">
         <div className="container-ind grid lg:grid-cols-[1.2fr_1fr] gap-12 py-20 items-end">
           <div>
             <p className="rubric !text-gold">Archaeogenetics & Ancient DNA</p>
-            <h1 className="display mt-5 text-ivory !text-[clamp(2.75rem,6vw,5.5rem)]">What the DNA says — and what it cannot.</h1>
-            <p className="lede mt-6 text-ivory/70 max-w-2xl">
+            <h1 className="display mt-5 text-paper !text-[clamp(2.75rem,6vw,5.5rem)]">What the DNA says — and what it cannot.</h1>
+            <p className="lede mt-6 text-paper/70 max-w-2xl">
               Ancient genomes have transformed the study of South Asia&apos;s population history. They are also easy to misread. This section presents the evidence study by study, with its methods and limits in plain view.
             </p>
           </div>
           <Plate image={{ id: "rakhigarhi", caption: "A Mature Harappan burial at Rakhigarhi, the cemetery that produced the first published Indus-associated genome." }} aspect="aspect-[4/3]" dark />
         </div>
-        <div className="border-t border-ivory/10">
+        <div className="border-t border-paper/10">
           <ul className="container-ind grid sm:grid-cols-2 lg:grid-cols-4">
             {PRINCIPLES.map(([t, d]) => (
-              <li key={t} className="py-7 pr-6 sm:border-r border-ivory/10 last:border-0">
+              <li key={t} className="py-7 pr-6 sm:border-r border-paper/10 last:border-0">
                 <p className="font-display text-xl text-gold">{t}</p>
-                <p className="text-sm text-ivory/60 mt-1.5 leading-relaxed">{d}</p>
+                <p className="text-sm text-paper/60 mt-1.5 leading-relaxed">{d}</p>
               </li>
             ))}
           </ul>
@@ -59,11 +61,20 @@ export default function GeneticsPage() {
         <AncestryGraph />
       </section>
 
+      <section id="specimens" className="container-ind pb-20 scroll-mt-24">
+        <SectionHead
+          eyebrow="Specimen database"
+          title="Ancestry calculator"
+          intro="Each ancient individual, published group or modelled population, with the ancestry models its study fitted and its physical profile. Every figure is transcribed from the publication with its location cited; where a source gives no number, none is shown."
+        />
+        <AncestryCalculator specimens={SPECIMENS} links={mapPayload().index} />
+      </section>
+
       <section className="bg-marble border-y rule py-20">
         <div className="container-ind">
           <SectionHead eyebrow="Geography of the evidence" title="Where ancient individuals were sampled" intro="Most of the subcontinent has no published ancient genomes. The map shows how thin — and how geographically skewed — the direct evidence still is." />
           <MiniMap points={samples} routes={routesFor(["route-steppe", "route-indus-periphery", "route-asi-formation"])} className="h-[480px]" labels />
-          <p className="mt-3 data text-[10px] text-stone">Points: published sampling locations. Dotted green lines: schematic ancestry flows (not migration paths). Selecting a point opens its study.</p>
+          <p className="mt-3 data text-[11px] text-stone">Points: published sampling locations. Dotted green lines: schematic ancestry flows (not migration paths). Selecting a point opens its study.</p>
         </div>
       </section>
 
@@ -89,7 +100,7 @@ export default function GeneticsPage() {
                     <p className="text-stone text-[13px] mt-1">{s.authors} · <em>{s.journal}</em></p>
                   </td>
                   <td className="py-5 pr-4">
-                    <span className={`data text-[10px] px-2 py-0.5 ${s.evidenceType === "direct-ancient-dna" ? "bg-sage-deep text-ivory" : s.evidenceType === "mixed" ? "bg-sage-pale text-sage-deep" : "border border-terracotta/50 text-terracotta-deep"}`}>
+                    <span className={`data text-[11px] px-2 py-0.5 ${s.evidenceType === "direct-ancient-dna" ? "bg-sage-strong text-paper" : s.evidenceType === "mixed" ? "bg-sage-pale text-sage-deep" : "border border-terracotta/50 text-terracotta-deep"}`}>
                       {s.evidenceType === "direct-ancient-dna" ? "Direct ancient DNA" : s.evidenceType === "mixed" ? "Ancient DNA + modelling" : "Present-day DNA modelling"}
                     </span>
                   </td>
@@ -109,7 +120,7 @@ export default function GeneticsPage() {
             {concepts.map((c) => (
               <div key={c.id} id={c.id} className="scroll-mt-24">
                 <div className="flex flex-wrap items-center gap-3 mb-2">
-                  <span className={`data text-[10px] px-2 py-0.5 ${c.basis === "direct-ancient-dna" ? "bg-sage-deep text-ivory" : "border border-dashed border-terracotta text-terracotta-deep"}`}>
+                  <span className={`data text-[11px] px-2 py-0.5 ${c.basis === "direct-ancient-dna" ? "bg-sage-strong text-paper" : "border border-dashed border-terracotta text-terracotta-deep"}`}>
                     {c.basis === "direct-ancient-dna" ? "Observed in ancient genomes" : "Statistical construct"}
                   </span>
                 </div>

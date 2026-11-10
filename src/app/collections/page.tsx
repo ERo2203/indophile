@@ -20,7 +20,7 @@ export default function CollectionsPage() {
               <p className="eyebrow">{c.items.length} entries</p>
               <h2 className="font-display text-[1.9rem] leading-tight mt-2 group-hover:text-terracotta">{c.title}</h2>
               <p className="text-sm text-stone mt-3">{c.summary}</p>
-              <p className="data text-[10px] text-stone-light mt-4">Curated by {c.curator}</p>
+              <p className="data text-[11px] text-stone-light mt-4">Curated by {c.curator}</p>
             </div>
           </Link>
         ))}

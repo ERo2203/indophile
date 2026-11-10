@@ -86,8 +86,8 @@ export function SearchClient({
               <li key={s.doc.id} role="option" aria-selected={false}>
                 <Link href={s.doc.href} className="inline-flex items-baseline gap-2 border rule bg-ivory px-3 py-1.5 text-sm hover:border-terracotta">
                   {s.doc.title}
-                  <span className="data text-[10px] text-stone">{typeLabels[s.doc.type]}</span>
-                  {s.via && !s.via.startsWith("related") && <span className="data text-[10px] text-terracotta">matched “{s.via}”</span>}
+                  <span className="data text-[11px] text-stone">{typeLabels[s.doc.type]}</span>
+                  {s.via && !s.via.startsWith("related") && <span className="data text-[11px] text-terracotta">matched “{s.via}”</span>}
                 </Link>
               </li>
             ))}
@@ -142,7 +142,7 @@ export function SearchClient({
                       <span className="eyebrow">{typeLabels[h.doc.type]}</span>
                       {h.doc.dateLabel && <span className="data text-stone">{h.doc.dateLabel}</span>}
                       {h.doc.country && <span className="data text-stone">◇ {h.doc.country}</span>}
-                      {h.via && <span className="data text-[10px] text-terracotta">{h.via.startsWith("related") ? h.via : `also known as “${h.via}”`}</span>}
+                      {h.via && <span className="data text-[11px] text-terracotta">{h.via.startsWith("related") ? h.via : `also known as “${h.via}”`}</span>}
                     </div>
                     <h2 className="font-display text-[1.65rem] leading-tight mt-1 group-hover:text-terracotta">{h.doc.title}</h2>
                     <p className="text-sm text-stone mt-1 line-clamp-2 max-w-3xl">{h.doc.summary}</p>

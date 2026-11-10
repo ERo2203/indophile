@@ -11,9 +11,9 @@
   --color-ivory: #faf8f2;
   --color-marble: #f6f4ef;
   --color-ink: #24231f;
-  --color-stone: #77736a;
-  --color-stone-light: #a7a296;
-  --color-terracotta: #a65d43;
+  --color-stone: #67635a;
+  --color-stone-light: #6f6b62;
+  --color-terracotta: #97503a;
   --color-terracotta-deep: #87452f;
   --color-sage: #7f8d6e;
   --color-sage-deep: #4e5b45;
@@ -22,6 +22,10 @@
   --color-night: #20211f;
   --color-night-soft: #2c2d2a;
   --color-rule: rgb(36 35 31 / 0.14);
+  /* Always-light text for permanently dark panels (time ribbon, night sections, photo credits). */
+  --color-paper: #faf8f2;
+  /* Always-dark green surface that carries paper text in both themes. */
+  --color-sage-strong: #4e5b45;
 
   --font-display: var(--font-cormorant), "Cormorant Garamond", Georgia, serif;
   --font-sans: var(--font-inter), Inter, system-ui, sans-serif;
@@ -31,6 +35,94 @@
   --text-h1: clamp(2.5rem, 5vw, 4.5rem);
   --text-h2: clamp(1.9rem, 3.2vw, 3rem);
 }
+
+/* Map palette (read by the Leaflet canvas at draw time) and long-form text colour. */
+:root {
+  color-scheme: light;
+  --map-sea: #dce5e1;
+  --map-land: #f7f3ea;
+  --map-coast: #b9ae97;
+  --map-lake: #dce5e1;
+  --map-lake-edge: #afc1bc;
+  --map-river: #8faaa3;
+  --map-grat: rgb(36 35 31 / 0.05);
+  --map-border: #77736a;
+  --map-label: #24231f;
+  --map-label-alt: #4a4339;
+  --map-halo: #f7f3ea;
+  --map-poly-edge: #3b352c;
+  --prose: #34322c;
+}
+
+/* Dark theme: a night reading room — warm charcoal grounds, parchment-toned text.
+   Follows the system unless the visitor picks a theme (stored as data-theme). */
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+  color-scheme: dark;
+  --color-parchment: #151613;
+  --color-ivory: #1d1e1a;
+  --color-marble: #191a17;
+  --color-ink: #ece7dc;
+  --color-stone: #a8a294;
+  --color-stone-light: #8d8779;
+  --color-terracotta: #df9474;
+  --color-terracotta-deep: #eaa98b;
+  --color-sage: #93a37f;
+  --color-sage-deep: #a7bd92;
+  --color-sage-pale: #24301f;
+  --color-gold: #cdb27a;
+  --color-night: #0d0e0c;
+  --color-night-soft: #1a1b18;
+  --color-rule: rgb(236 231 220 / 0.13);
+  --color-sage-strong: #55654a;
+  --map-sea: #0f1716;
+  --map-land: #23241f;
+  --map-coast: #4a463c;
+  --map-lake: #0f1716;
+  --map-lake-edge: #2c3a37;
+  --map-river: #3c5a54;
+  --map-grat: rgb(236 231 220 / 0.05);
+  --map-border: #8d8779;
+  --map-label: #ece7dc;
+  --map-label-alt: #c9c2b4;
+  --map-halo: #151613;
+  --map-poly-edge: #0d0e0c;
+  --prose: #d9d3c6;
+  }
+}
+:root[data-theme="dark"] {
+  color-scheme: dark;
+  --color-parchment: #151613;
+  --color-ivory: #1d1e1a;
+  --color-marble: #191a17;
+  --color-ink: #ece7dc;
+  --color-stone: #a8a294;
+  --color-stone-light: #8d8779;
+  --color-terracotta: #df9474;
+  --color-terracotta-deep: #eaa98b;
+  --color-sage: #93a37f;
+  --color-sage-deep: #a7bd92;
+  --color-sage-pale: #24301f;
+  --color-gold: #cdb27a;
+  --color-night: #0d0e0c;
+  --color-night-soft: #1a1b18;
+  --color-rule: rgb(236 231 220 / 0.13);
+  --color-sage-strong: #55654a;
+  --map-sea: #0f1716;
+  --map-land: #23241f;
+  --map-coast: #4a463c;
+  --map-lake: #0f1716;
+  --map-lake-edge: #2c3a37;
+  --map-river: #3c5a54;
+  --map-grat: rgb(236 231 220 / 0.05);
+  --map-border: #8d8779;
+  --map-label: #ece7dc;
+  --map-label-alt: #c9c2b4;
+  --map-halo: #151613;
+  --map-poly-edge: #0d0e0c;
+  --prose: #d9d3c6;
+}
+
 
 html {
   scroll-behavior: smooth;
@@ -44,6 +136,12 @@ body {
   font-feature-settings: "ss01", "cv11";
   -webkit-font-smoothing: antialiased;
   text-rendering: optimizeLegibility;
+}
+
+html {
+  scrollbar-color: color-mix(in srgb, var(--color-stone) 55%, transparent) transparent;
+  caret-color: var(--color-terracotta);
+  accent-color: var(--color-terracotta);
 }
 
 ::selection {
@@ -117,7 +215,7 @@ body {
 .prose-ind {
   font-size: 1.075rem;
   line-height: 1.75;
-  color: #34322c;
+  color: var(--prose);
 }
 .prose-ind p + p { margin-top: 1.1em; }
 .prose-ind .dropcap::first-letter {
@@ -189,15 +287,17 @@ body {
 .scroller > * { scroll-snap-align: start; }
 
 /* ——— Leaflet theming */
-.leaflet-container {
+:root .leaflet-container {
   z-index: 0; /* own stacking context so map panes never cover the sticky header */
-  background: #e9e3d4;
+  background: var(--map-sea);
   font-family: var(--font-sans);
 }
-.atlas-tiles { filter: sepia(0.35) saturate(0.55) brightness(1.04) contrast(0.92); }
+/* Tiles are left unfiltered: CSS filters on tile layers produce visible seams. */
+.no-scrollbar { scrollbar-width: none; }
+.no-scrollbar::-webkit-scrollbar { display: none; }
 .leaflet-control-attribution {
-  background: rgb(250 248 242 / 0.85) !important;
-  font-size: 10px !important;
+  background: color-mix(in srgb, var(--color-ivory) 88%, transparent) !important;
+  font-size: 11px !important;
   color: var(--color-stone) !important;
 }
 .leaflet-control-attribution a { color: var(--color-sage-deep) !important; }
@@ -208,7 +308,7 @@ body {
 }
 .leaflet-tooltip.ind-tip {
   background: var(--color-night);
-  color: var(--color-ivory);
+  color: var(--color-paper);
   border: 0;
   border-radius: 2px;
   font-family: var(--font-mono);
@@ -219,12 +319,29 @@ body {
 }
 .leaflet-tooltip.ind-tip::before { display: none; }
 .ind-label {
+  display: inline-block;
+  transform: translate(-50%, -50%);
   font-family: var(--font-display);
   font-style: italic;
+  font-weight: 600;
   font-size: 15px;
   color: var(--color-terracotta-deep);
   white-space: nowrap;
-  text-shadow: 0 0 3px #f3efe6, 0 0 6px #f3efe6;
+  text-shadow: 0 0 2px var(--map-halo), 0 0 4px var(--map-halo), 0 0 7px var(--map-halo);
+  pointer-events: none;
+}
+.ind-label-sm { font-size: 12.5px; }
+.ind-area-label-alt { font-style: italic; font-weight: 500; color: var(--map-label-alt); }
+.ind-area-label {
+  display: inline-block;
+  transform: translate(-50%, -50%);
+  font-family: var(--font-display);
+  font-weight: 600;
+  color: var(--map-label);
+  white-space: nowrap;
+  letter-spacing: 0.01em;
+  text-shadow: 0 0 2px var(--map-halo), 0 0 5px var(--map-halo);
+  pointer-events: none;
 }
 
 /* Range input for the time slider */

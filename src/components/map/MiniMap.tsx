@@ -2,21 +2,22 @@
 
 import { useRouter } from "next/navigation";
 import { useState } from "react";
-import type { PointFeature, RouteFeature, MapPayload } from "@/lib/maptypes";
+import type { PointFeature, RouteFeature } from "@/lib/maptypes";
 import { DynamicMap } from "./DynamicMap";
 
 /** A small contextual map that fits to its features; clicking a point opens its record. */
 export function MiniMap({
   points,
   routes = [],
-  territories = [],
+  boundaries = null,
   highlight,
   className = "h-[360px]",
   labels = false,
 }: {
   points: PointFeature[];
   routes?: RouteFeature[];
-  territories?: MapPayload["territories"];
+  /** Sourced political boundaries (Cliopatria). */
+  boundaries?: { year: number | null; only?: string[]; largest?: boolean } | null;
   highlight?: string;
   className?: string;
   labels?: boolean;
@@ -29,7 +30,7 @@ export function MiniMap({
         className="absolute inset-0"
         points={points}
         routes={routes}
-        territories={territories}
+        boundaries={boundaries}
         selectedId={sel}
         fit
         showLabels={labels}

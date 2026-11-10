@@ -23,12 +23,21 @@ export default function ExplorePage() {
                 <div>
                   <h2 className="font-display text-[1.7rem] leading-tight group-hover:text-terracotta">{s.title}</h2>
                   <p className="text-sm text-stone mt-1">{s.summary}</p>
-                  <p className="data text-[10px] text-stone-light mt-3">{n} entries</p>
+                  <p className="data text-[11px] text-stone-light mt-3">{n} entries</p>
                 </div>
               </Link>
             );
           })}
         </div>
+      </section>
+      <section className="container-ind pb-16">
+        <Link href="/deep-time" className="group flex flex-col md:flex-row md:items-center justify-between gap-4 bg-night text-paper p-8">
+          <div>
+            <p className="eyebrow !text-gold">Deep time</p>
+            <p className="font-display text-3xl mt-1 group-hover:text-gold">Dinosaurs, the Deccan Traps, the first whales and the Narmada skull cap</p>
+          </div>
+          <span className="data text-paper/70">190 million years ago → 40,000 years ago →</span>
+        </Link>
       </section>
       <section className="bg-marble border-y rule py-20">
         <div className="container-ind">

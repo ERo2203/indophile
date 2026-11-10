@@ -71,6 +71,7 @@ export type PolityKind =
   | "sultanate"
   | "confederacy"
   | "colonial"
+  | "chiefdom"
   | "nation-state";
 
 export type MapLayer =
@@ -83,7 +84,11 @@ export type MapLayer =
   | "battle"
   | "inscription"
   | "port"
-  | "unesco";
+  | "unesco"
+  | "temple"
+  | "hotspot"
+  | "language"
+  | "fossil";
 
 export interface Citation {
   sourceId: string;
@@ -180,11 +185,29 @@ export interface PolityEntry extends BaseEntry {
    * src/lib/geo.ts — and is always rendered as an estimate.
    */
   extent?: {
-    evidence: string[];
+    /** Ids of sourced site entries whose find-spots attest the polity's reach. */
+    evidence?: string[];
+    /** Capitals, dated monuments and inscription find-spots given inline. */
+    anchors?: Anchor[];
+    /** Separate, non-contiguous holdings (e.g. colonial enclaves); each is enveloped on its own. */
+    zones?: Anchor[][];
+    /** Envelope radius around each anchor, in degrees (default 0.8). */
+    radius?: number;
     basis: string;
     confidence: "documented" | "estimated" | "disputed";
     maxExtent?: DateRange;
   };
+}
+
+export interface Anchor {
+  name: string;
+  lat: number;
+  lng: number;
+  /** What attests the polity here: capital, inscription, monument, port… */
+  role?: string;
+  /** Years during which this place counts towards the polity's extent (conquest, loss, foundation). */
+  from?: number;
+  to?: number;
 }
 
 export interface SiteEntry extends BaseEntry {
@@ -197,8 +220,12 @@ export interface SiteEntry extends BaseEntry {
   findings?: string[];
   datingMethods?: string[];
   unesco?: { id: number; year: number };
+  /** Religious tradition(s) of a sacred site, for the religion theme. */
+  tradition?: Tradition[];
   sections?: Section[];
 }
+
+export type Tradition = "buddhist" | "jain" | "hindu" | "islamic" | "sikh" | "christian" | "zoroastrian" | "jewish" | "ajivika" | "vedic";
 
 export interface ArtefactEntry extends BaseEntry {
   type: "artefact";

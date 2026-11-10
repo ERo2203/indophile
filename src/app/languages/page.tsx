@@ -43,7 +43,7 @@ export default function LanguagesPage() {
           })}
           <div className="grid grid-cols-[9rem_1fr] sm:grid-cols-[12rem_1fr] gap-4">
             <span />
-            <span className="relative h-4 data text-[10px] text-stone">
+            <span className="relative h-4 data text-[11px] text-stone">
               {[-3000, -2000, -1000, 1, 600].map((y) => (
                 <span key={y} className="absolute -translate-x-1/2" style={{ left: `${x(y)}%` }}>{y < 0 ? `${-y} BCE` : `${y} CE`}</span>
               ))}
@@ -61,7 +61,7 @@ export default function LanguagesPage() {
               <div className="space-y-10">
                 <div>
                   <div className="flex flex-wrap items-center gap-3">
-                    <span className={`data text-[10px] px-2 py-0.5 ${s.deciphered === "no" ? "bg-night text-gold" : "bg-sage-pale text-sage-deep"}`}>{DECIPHER[s.deciphered]}</span>
+                    <span className={`data text-[11px] px-2 py-0.5 ${s.deciphered === "no" ? "bg-night text-gold" : "bg-sage-pale text-sage-deep"}`}>{DECIPHER[s.deciphered]}</span>
                     <span className="eyebrow">{s.family}</span>
                     <EvidenceBadge level={s.evidence} />
                   </div>

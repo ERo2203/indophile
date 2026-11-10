@@ -5,8 +5,9 @@ import { DetailShell } from "@/components/DetailShell";
 import { MiniMap } from "@/components/map/MiniMap";
 import { DateTag, EditorialSection, EntryCard, EntryLink, FactTable, LinkList } from "@/components/ui";
 import { entriesOfType, getEntry, related } from "@/lib/db";
-import { pointsFor, territoriesFor } from "@/lib/mapdata";
-import { POLITY_KIND } from "@/lib/format";
+import { pointsFor } from "@/lib/mapdata";
+import { POLITY_TO_CLIO, CLIOPATRIA_CITATION } from "@/lib/cliopatria";
+import { POLITY_KIND, formatYear } from "@/lib/format";
 
 export function generateStaticParams() {
   return entriesOfType("polity").map((p) => ({ id: p.id }));
@@ -25,7 +26,7 @@ export default async function PolityPage({ params }: { params: Promise<{ id: str
   const relSites = related(id, ["site"]);
   const extentIds = p.extent?.evidence ?? [];
   const mapPoints = pointsFor([...new Set([...extentIds, ...relSites.map((s) => s.id), ...(p.capitals ?? []).map((c) => c.place).filter(Boolean) as string[]])]);
-  const territories = territoriesFor([id]);
+  const hasBoundary = (POLITY_TO_CLIO[id] ?? []).length > 0;
   const people = related(id, ["person"]);
   const studies = related(id, ["study", "concept"]);
   const scripts = related(id, ["script"]);
@@ -74,18 +75,46 @@ export default async function PolityPage({ params }: { params: Promise<{ id: str
         <section>
           <p className="rubric mb-2">The Map Check</p>
           <h2 className="h3 mb-2">Geographic extent</h2>
-          {p.extent && (
-            <p className="text-sm text-stone leading-relaxed mb-5 max-w-3xl">
-              <span className="data text-[10px] uppercase tracking-wider mr-2 border border-terracotta/40 text-terracotta-deep px-1.5 py-0.5">{p.extent.confidence}</span>
-              {p.extent.basis}
-            </p>
-          )}
-          <MiniMap points={mapPoints} territories={territories} className="h-[460px]" />
-          <div className="mt-3 flex flex-wrap gap-x-6 gap-y-1 data text-[10px] text-stone">
-            <span><span className="inline-block w-5 border-t-2 border-dashed border-terracotta-deep align-middle mr-1.5" />Estimated extent (envelope of evidence)</span>
+          <p className="text-sm text-stone leading-relaxed mb-5 max-w-3xl">
+            {hasBoundary ? (
+              <>Largest recorded extent, from <a className="underline" href={CLIOPATRIA_CITATION.repo} target="_blank" rel="noopener noreferrer">Cliopatria</a> (Seshat Global History Databank, CC BY 4.0) — drawn as published. Open the atlas to see how it changed over time. Points are the places Indophile uses to locate the polity.</>
+            ) : (
+              <>No sourced boundary for this polity is available yet, so none is drawn. Points show the capitals, inscriptions and monuments that locate it.</>
+            )}
+          </p>
+          <MiniMap points={mapPoints} boundaries={hasBoundary ? { year: null, only: [id], largest: true } : null} className="h-[460px]" />
+          <div className="mt-3 flex flex-wrap gap-x-6 gap-y-1 data text-[11px] text-stone">
+            {hasBoundary && <span><span className="inline-block w-4 h-3 bg-terracotta/50 border border-ink/40 align-middle mr-1.5" />Extent per Cliopatria</span>}
             <span><span className="inline-block w-2.5 h-2.5 rounded-full bg-terracotta align-middle mr-1.5" />Evidence find-spot or major centre</span>
             <Link href={`/atlas?year=${p.extent?.maxExtent?.start ?? p.dates?.start ?? 0}&focus=${p.id}`} className="text-terracotta hover:underline">Open in full atlas →</Link>
           </div>
+          {p.extent && ((p.extent.anchors?.length ?? 0) > 0 || (p.extent.zones?.length ?? 0) > 0) && (
+            <div className="mt-8">
+              <p className="eyebrow mb-3">Places that locate this polity</p>
+              <table className="w-full text-sm">
+                <thead>
+                  <tr className="text-left border-b-2 border-ink">
+                    <th className="eyebrow py-2 pr-4">Place</th>
+                    <th className="eyebrow py-2 pr-4">Role</th>
+                    <th className="eyebrow py-2">Counted</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {[...(p.extent.anchors ?? []), ...(p.extent.zones ?? []).flat()].map((x, i) => (
+                    <tr key={i} className="border-b rule">
+                      <td className="py-2 pr-4 font-display text-lg">{x.name}</td>
+                      <td className="py-2 pr-4 text-stone">{x.role}</td>
+                      <td className="py-2 data text-[12px]">
+                        {x.from !== undefined || x.to !== undefined
+                          ? `${x.from !== undefined ? formatYear(x.from) : "start"} – ${x.to !== undefined ? formatYear(x.to) : "end"}`
+                          : "whole period"}
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          )}
         </section>
       )}
 

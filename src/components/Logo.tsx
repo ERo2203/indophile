@@ -1,12 +1,25 @@
-/** The Indophile mark: a section through stratified earth — layers of time. */
-export function Mark({ className = "w-7 h-7" }: { className?: string }) {
+/**
+ * The Indophile mark: an incised glyph — two cuts that rise from a crossed
+ * tail into a pointed almond, with a short arm either side. Drawn as a groove
+ * (a broad, faint channel under a narrow cut) so it reads as carved, not inked.
+ */
+const CUTS = [
+  "M16 3.2C10.6 8 10.1 15.4 16 20.6S21.6 26.6 23.4 28.8",
+  "M16 3.2C21.4 8 21.9 15.4 16 20.6S10.4 26.6 8.6 28.8",
+  "M11.3 12.6 4.2 13.9",
+  "M20.7 12.6 27.8 13.9",
+];
+
+export function Mark({ className = "w-7 h-7", accent = true }: { className?: string; accent?: boolean }) {
   return (
-    <svg viewBox="0 0 32 32" className={className} aria-hidden="true">
-      <circle cx="16" cy="16" r="14.5" fill="none" stroke="currentColor" strokeWidth="1.2" />
-      <path d="M3.2 12.5c4.2-1.6 8.4 1.2 12.8 0s8.6-1.8 12.8-.2" fill="none" stroke="currentColor" strokeWidth="1.1" />
-      <path d="M2.4 17.4c4.6-1.2 9 1.4 13.6.2s9-1.4 13.6 0" fill="none" stroke="currentColor" strokeWidth="1.1" />
-      <path d="M4 22.4c4-1 7.8 1 12 0s8-1 12 0" fill="none" stroke="var(--color-terracotta)" strokeWidth="1.5" />
-      <circle cx="19.5" cy="25.6" r="1.3" fill="var(--color-terracotta)" />
+    <svg viewBox="0 0 32 32" className={className} aria-hidden="true" fill="none" strokeLinecap="round" strokeLinejoin="round">
+      {CUTS.map((d) => (
+        <path key={`g${d}`} d={d} stroke="currentColor" strokeOpacity="0.18" strokeWidth="3.6" />
+      ))}
+      {CUTS.map((d) => (
+        <path key={d} d={d} stroke="currentColor" strokeWidth="1.7" />
+      ))}
+      {accent && <circle cx="16" cy="20.6" r="1.25" style={{ fill: "var(--color-terracotta)" }} />}
     </svg>
   );
 }

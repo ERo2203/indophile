@@ -57,9 +57,9 @@ export default async function PersonPage({ params }: { params: Promise<{ id: str
       )}
 
       {p.debates && (
-        <section className="bg-night text-ivory/85 px-6 sm:px-10 py-10">
+        <section className="bg-night text-paper/85 px-6 sm:px-10 py-10">
           <p className="rubric !text-gold mb-2">What We Still Don&apos;t Know</p>
-          <h2 className="h3 text-ivory mb-4">Historical debates</h2>
+          <h2 className="h3 text-paper mb-4">Historical debates</h2>
           <ul className="space-y-3 list-disc pl-5 marker:text-gold">{p.debates.map((c) => <li key={c}>{c}</li>)}</ul>
         </section>
       )}

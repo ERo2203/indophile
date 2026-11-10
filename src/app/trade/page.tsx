@@ -24,7 +24,7 @@ export default function TradePage() {
       />
       <div className="container-ind pb-16">
         <div className="border rule">
-          <AtlasExplorer payload={mapPayload()} variant="preview" defaultYear={50} defaultLayers={["trade", "migration", "port"]} />
+          <AtlasExplorer payload={mapPayload()} variant="preview" defaultYear={50} defaultLayers={["trade", "migration", "port"]} initialView={{ center: [20, 62], zoom: 4 }} />
         </div>
       </div>
 
@@ -37,7 +37,7 @@ export default function TradePage() {
                 <div className="flex flex-wrap items-center gap-3">
                   <DateTag range={r.dates} />
                   <EvidenceBadge level={r.evidence} compact />
-                  <span className="data text-[10px] text-stone">{r.geometryBasis === "schematic" ? "schematic line" : "attested waypoints"}</span>
+                  <span className="data text-[11px] text-stone">{r.geometryBasis === "schematic" ? "schematic line" : "attested waypoints"}</span>
                 </div>
                 <h3 className="font-display text-[1.7rem] leading-tight mt-2">{r.title}</h3>
                 <p className="text-sm text-ink/80 mt-2 leading-relaxed">{r.summary}</p>

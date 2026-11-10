@@ -5,26 +5,71 @@
  */
 import type { Entry, EntryType, ImageRecord, PeriodEntry, SiteEntry, Source } from "./types";
 import { periods } from "@/data/periods";
-import { polities } from "@/data/polities";
-import { sites } from "@/data/sites";
+import { polities as basePolities } from "@/data/polities";
+import { dynasties, EXTRA_ANCHORS, POLITY_REGION } from "@/data/dynasties";
+import { moreDynasties, MALDIVES, MORE_ANCHORS } from "@/data/dynasties-more";
+import { extraSites, extraCultures, extraConcepts, extraRoutes, extraEvents } from "@/data/sites-extra";
+import { religiousSites, hotspotSites, attestationSites, TRADITIONS, HOTSPOT_IDS } from "@/data/themes";
+import { fossilSites, deepEvents } from "@/data/deep-time";
+import type { MapLayer } from "./types";
+import { sites as baseSites } from "@/data/sites";
 import { people, events, artefacts } from "@/data/people-events";
+import { morePeople, moreEvents } from "@/data/people-events-more";
 import { studies, concepts } from "@/data/genetics";
 import { scripts, routes } from "@/data/scripts-routes";
 import { subjects, articles, collections } from "@/data/editorial";
 import { sources } from "@/data/sources";
 import imageRegistry from "@/data/images.json";
 
+// Merge inline anchors into polities defined elsewhere, so one envelope covers both.
+const polities = [...basePolities, ...extraCultures, ...dynasties, ...moreDynasties, ...MALDIVES].map((p) => {
+  const more = MORE_ANCHORS[p.id] ?? [];
+  const extra0 = EXTRA_ANCHORS[p.id];
+  const extra = extra0 || more.length ? { region: extra0?.region ?? POLITY_REGION[p.id] ?? "", radius: extra0?.radius, anchors: [...(extra0?.anchors ?? []), ...more] } : undefined;
+  if (extra?.region) POLITY_REGION[p.id] = extra.region;
+  if (!extra || !extra.anchors.length) return p;
+  return {
+    ...p,
+    extent: p.extent
+      ? { ...p.extent, anchors: [...(p.extent.anchors ?? []), ...extra.anchors], radius: extra.radius ?? p.extent.radius }
+      : {
+          anchors: extra.anchors,
+          radius: extra.radius,
+          confidence: "estimated" as const,
+          basis: "Envelope around the capitals, inscriptions and sites listed, which the cited sources attribute to this polity. Real control fluctuated and frontier zones were shared or contested.",
+        },
+  };
+});
+
+export function regionOf(polityId: string): string | undefined {
+  return POLITY_REGION[polityId];
+}
+
+// Tag existing sites with religious traditions and hotspot status.
+const sites = [...baseSites, ...extraSites, ...fossilSites, ...religiousSites, ...hotspotSites, ...attestationSites].map((st) => {
+  const tradition = st.tradition ?? TRADITIONS[st.id];
+  const hot = HOTSPOT_IDS.includes(st.id) && !st.layers.includes("hotspot");
+  if (!tradition && !hot) return st;
+  return { ...st, tradition, layers: hot ? [...st.layers, "hotspot" as MapLayer] : st.layers };
+});
+
 const ALL: Entry[] = [
   ...periods,
   ...polities,
   ...sites,
   ...people,
+  ...morePeople,
   ...events,
+  ...moreEvents,
+  ...extraEvents,
+  ...deepEvents,
   ...artefacts,
   ...studies,
   ...concepts,
+  ...extraConcepts,
   ...scripts,
   ...routes,
+  ...extraRoutes,
   ...subjects,
   ...articles,
   ...collections,
