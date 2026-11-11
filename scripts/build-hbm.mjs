@@ -16,7 +16,9 @@ const slices = fs.readdirSync(dir).filter((f) => /^world_(bc)?\d+\.geojson$/.tes
 // Language families and ethnic labels drawn as territories (precision 1 in the source).
 // They map speakers, not polities, and some are unsupported for their dates (e.g. the
 // whole subcontinent as "Austro-Asiatic rice cultures" c. 2000 BCE), so they are left out.
-const EXCLUDE = new Set(["Austro-Asiatic rice cultures", "Tibeto-Burmanese", "Dravidians", "Vedic Aryans", "Iranian pastoralists", "Tibetans", "Burmese", "Thai", "Proto-Tibetan cultures"]);
+const EXCLUDE = new Set(["Austro-Asiatic rice cultures", "Tibeto-Burmanese", "Dravidians", "Vedic Aryans", "Iranian pastoralists", "Tibetans", "Burmese", "Thai", "Proto-Tibetan cultures",
+  // Generic fillers that put a religious label on unnamed polities.
+  "Hindu kingdoms", "Hindu kingdoms and republics"]);
 const out = [];
 slices.forEach((s, i) => {
   const to = i + 1 < slices.length ? slices[i + 1].y - 1 : 1946;
