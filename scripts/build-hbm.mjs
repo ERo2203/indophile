@@ -13,13 +13,17 @@ function dpRing(r){const m=Math.floor(r.length/2);return [...dp(r.slice(0,m+1),T
 function ringOut(ring){let r=clipRing(ring);if(r.length<4)return null;r=dpRing(r).map(p=>[r2(p[0]),r2(p[1])]);const d=[];for(const p of r){const l=d[d.length-1];if(!l||l[0]!==p[0]||l[1]!==p[1])d.push(p);}return d.length>=4?d:null;}
 const year = (n) => (n.startsWith("bc") ? -Number(n.slice(2)) : Number(n));
 const slices = fs.readdirSync(dir).filter((f) => /^world_(bc)?\d+\.geojson$/.test(f)).map((f) => ({ f, y: year(f.slice(6, -8)) })).sort((a, b) => a.y - b.y);
+// Language families and ethnic labels drawn as territories (precision 1 in the source).
+// They map speakers, not polities, and some are unsupported for their dates (e.g. the
+// whole subcontinent as "Austro-Asiatic rice cultures" c. 2000 BCE), so they are left out.
+const EXCLUDE = new Set(["Austro-Asiatic rice cultures", "Tibeto-Burmanese", "Dravidians", "Vedic Aryans", "Iranian pastoralists", "Tibetans", "Burmese", "Thai", "Proto-Tibetan cultures"]);
 const out = [];
 slices.forEach((s, i) => {
   const to = i + 1 < slices.length ? slices[i + 1].y - 1 : 1946;
   const fc = JSON.parse(fs.readFileSync(`${dir}/${s.f}`, "utf8"));
   for (const f of fc.features) {
     const p = f.properties ?? {};
-    if (!f.geometry || !p.NAME) continue;
+    if (!f.geometry || !p.NAME || EXCLUDE.has(p.NAME)) continue;
     const b = bbox(f.geometry); const cx = (b[0]+b[2])/2, cy = (b[1]+b[3])/2;
     if (!(cx > 58 && cx < 99 && cy > 3 && cy < 40)) continue;
     const polys = f.geometry.type === "Polygon" ? [f.geometry.coordinates] : f.geometry.coordinates;
