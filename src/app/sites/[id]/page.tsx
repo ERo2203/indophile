@@ -46,7 +46,24 @@ export default async function SitePage({ params }: { params: Promise<{ id: strin
         <div className="space-y-8">
           <FactTable
             rows={[
-              ["Coordinates", <span key="c" className="data">{dms(s.place.lat, "N", "S")} {dms(s.place.lng, "E", "W")}{s.place.approximate ? " (approx.)" : ""}</span>],
+              ["Coordinates", (
+                <span key="c" className="data inline-flex items-center gap-1.5">
+                  {dms(s.place.lat, "N", "S")} {dms(s.place.lng, "E", "W")}{s.place.approximate ? " (approx.)" : ""}
+                  <a
+                    href={`https://www.google.com/maps/place/${s.place.lat},${s.place.lng}`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-terracotta hover:opacity-70"
+                    aria-label="Open in Google Maps"
+                    title="Open in Google Maps"
+                  >
+                    <svg aria-hidden="true" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                      <path d="M12 21s-7-6.2-7-12a7 7 0 0 1 14 0c0 5.8-7 12-7 12z" />
+                      <circle cx="12" cy="9" r="2.5" />
+                    </svg>
+                  </a>
+                </span>
+              )],
               ["Present-day", `${s.place.modern}, ${s.place.country}`],
               ["Period", <DateTag key="d" range={s.dates} />],
               ["Culture", s.culture],
