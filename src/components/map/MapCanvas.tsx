@@ -31,6 +31,12 @@ export interface MapCanvasProps {
   boundaries?: { year: number | null; only?: string[]; largest?: boolean } | null;
   onBoundariesShown?: (shown: ShownPolity[]) => void;
   basemap?: "plain" | "terrain";
+  /**
+   * Sea level in metres relative to today (≤ 0). When set, the land that a sea
+   * this low would expose is drawn beneath present-day land (bathtub model on
+   * ETOPO 2022). null hides it.
+   */
+  seaLevel?: number | null;
 }
 
 
@@ -49,6 +55,7 @@ export default function MapCanvas({
   boundaries = null,
   onBoundariesShown,
   basemap = "plain",
+  seaLevel = null,
 }: MapCanvasProps) {
   const el = useRef<HTMLDivElement>(null);
   const map = useRef<LT.Map | null>(null);
@@ -62,6 +69,8 @@ export default function MapCanvas({
   const onShownRef = useRef(onBoundariesShown);
   onShownRef.current = onBoundariesShown;
   const terrain = useRef<LT.TileLayer | null>(null);
+  const shelf = useRef<LT.Polygon | null>(null);
+  const shelfRenderer = useRef<LT.Canvas | null>(null);
   const onSelectRef = useRef(onSelect);
   onSelectRef.current = onSelect;
   const [ready, setReadyTick] = useState(0);
@@ -91,6 +100,7 @@ export default function MapCanvas({
       });
       // Plain cartographic base: land, lakes, rivers and a faint graticule,
       // drawn from Natural Earth (public domain). No imagery, no tiles.
+      m.createPane("shelf").style.zIndex = "190";
       m.createPane("base").style.zIndex = "200";
       m.createPane("borders").style.zIndex = "250";
       const base = leaflet.canvas({ pane: "base", padding: 0.5 });
@@ -112,6 +122,7 @@ export default function MapCanvas({
         lakes.setStyle({ color: cssVar("--map-lake-edge"), fillColor: cssVar("--map-lake") });
         rivers.setStyle({ color: cssVar("--map-river") });
         graticule.setStyle({ color: cssVar("--map-grat") });
+        shelf.current?.setStyle({ color: cssVar("--map-shelf-edge"), fillColor: cssVar("--map-shelf") });
         setReadyTick((t) => t + 1);
       };
       themeHandler.current = repaint;
@@ -159,6 +170,34 @@ export default function MapCanvas({
       borderLayer.current = null;
     }
   });
+
+  // Ancient coastline: land exposed by a lower sea, drawn under present land.
+  // Levels are precomputed every 5 m; the nearest is shown.
+  const shelfLevel = seaLevel === null || seaLevel > -2.5 ? null : Math.max(-130, Math.min(-5, Math.round(seaLevel / 5) * 5));
+  useEffect(() => {
+    const m = map.current, leaflet = L.current;
+    if (!m || !leaflet) return;
+    let alive = true;
+    if (shelfLevel === null) {
+      shelf.current?.remove();
+      shelf.current = null;
+      return;
+    }
+    loadShelf().then((levels) => {
+      if (!alive) return;
+      const lv = levels.find((x) => x.level === shelfLevel);
+      shelf.current?.remove();
+      shelf.current = null;
+      if (!lv) return;
+      const rings = lv.rings.map((r) => r.map(([x, y]) => [y, x] as [number, number]));
+      shelf.current = leaflet
+        .polygon(rings, { pane: "shelf", renderer: (shelfRenderer.current ??= leaflet.canvas({ pane: "shelf", padding: 0.5 })), interactive: false, color: cssVar("--map-shelf-edge"), weight: 1, dashArray: "4 3", fillColor: cssVar("--map-shelf"), fillOpacity: 1, fillRule: "evenodd" })
+        .addTo(m);
+    });
+    return () => {
+      alive = false;
+    };
+  }, [shelfLevel, ready]);
 
   // Terrain basemap (optional)
   useEffect(() => {
@@ -393,6 +432,12 @@ function coveredShare(f: HbmFeature, over: ClioFeature[]): number {
     if (cand.some((o) => inFeature(x, y, o))) covered++;
   }
   return inside ? covered / inside : 1;
+}
+
+type ShelfLevel = { level: number; rings: [number, number][][] };
+let shelfCache: Promise<ShelfLevel[]> | null = null;
+function loadShelf(): Promise<ShelfLevel[]> {
+  return (shelfCache ??= fetch("/geo/shelf.json").then((r) => r.json()).then((j) => j.levels as ShelfLevel[]));
 }
 
 let hbmCache: Promise<HbmFeature[]> | null = null;

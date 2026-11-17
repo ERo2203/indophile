@@ -115,9 +115,10 @@ export const LAYER_META: Record<MapLayer, { label: string; color: string; shape:
   hotspot: { label: "Cultural hotspots", color: "#C08A1E", shape: "circle" },
   language: { label: "Language attestations", color: "#3F5A78", shape: "triangle" },
   fossil: { label: "Fossils & deep time", color: "#6B5B3E", shape: "square" },
+  landscape: { label: "Landscape changes", color: "#9A6B2F", shape: "diamond" },
 };
 
-const PRIORITY: MapLayer[] = ["fossil", "battle", "language", "inscription", "temple", "port", "religious", "hotspot", "archaeological", "settlement", "unesco", "trade"];
+const PRIORITY: MapLayer[] = ["landscape", "fossil", "battle", "language", "inscription", "temple", "port", "religious", "hotspot", "archaeological", "settlement", "unesco", "trade"];
 
 export function primaryLayer(p: Pick<PointFeature, "layers">, colorBy?: MapLayer[]): MapLayer {
   const order = colorBy ?? PRIORITY;

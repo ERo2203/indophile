@@ -10,6 +10,7 @@ import { dynasties, EXTRA_ANCHORS, POLITY_REGION } from "@/data/dynasties";
 import { moreDynasties, MALDIVES, MORE_ANCHORS } from "@/data/dynasties-more";
 import { atlasDynasties } from "@/data/dynasties-atlas";
 import { monumentSites } from "@/data/monuments";
+import { landscapeSites } from "@/data/landscape";
 import { moreRoutes } from "@/data/routes-more";
 import { extraSites, extraCultures, extraConcepts, extraRoutes, extraEvents } from "@/data/sites-extra";
 import { religiousSites, hotspotSites, attestationSites, TRADITIONS, HOTSPOT_IDS } from "@/data/themes";
@@ -49,7 +50,7 @@ export function regionOf(polityId: string): string | undefined {
 }
 
 // Tag existing sites with religious traditions and hotspot status.
-const sites = [...baseSites, ...extraSites, ...fossilSites, ...religiousSites, ...hotspotSites, ...attestationSites, ...monumentSites].map((st) => {
+const sites = [...baseSites, ...extraSites, ...fossilSites, ...religiousSites, ...hotspotSites, ...attestationSites, ...monumentSites, ...landscapeSites].map((st) => {
   const tradition = st.tradition ?? TRADITIONS[st.id];
   const hot = HOTSPOT_IDS.includes(st.id) && !st.layers.includes("hotspot");
   if (!tradition && !hot) return st;

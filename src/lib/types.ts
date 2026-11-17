@@ -76,6 +76,7 @@ export type PolityKind =
 
 export type MapLayer =
   | "archaeological"
+  | "landscape"
   | "settlement"
   | "polity"
   | "migration"

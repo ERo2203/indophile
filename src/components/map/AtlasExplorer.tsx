@@ -8,12 +8,13 @@ import type { MapPayload } from "@/lib/maptypes";
 import { LAYER_META, TRADITION_COLORS, primaryLayer } from "@/lib/maptypes";
 import { CLIOPATRIA_CITATION, CLIO_TO_POLITY, HBM_CITATION, parseClioKey, parseHbmKey, type ShownPolity } from "@/lib/cliopatria";
 import { formatYear } from "@/lib/format";
+import { SEA_LEVEL, seaLevelAt } from "@/data/sea-level";
 
 const fy = (y: number) => formatYear(y).replace(" CE", "");
 import { DynamicMap } from "./DynamicMap";
 import { TimeScroller } from "./TimeScroller";
 
-const ALL_LAYERS: MapLayer[] = ["polity", "archaeological", "settlement", "inscription", "temple", "religious", "hotspot", "language", "fossil", "port", "trade", "migration", "battle", "unesco"];
+const ALL_LAYERS: MapLayer[] = ["polity", "archaeological", "settlement", "inscription", "temple", "religious", "hotspot", "language", "fossil", "port", "trade", "migration", "battle", "unesco", "landscape"];
 const SHEET = "relative w-full min-h-0 shrink overflow-y-auto overscroll-contain bg-parchment border-t sm:border rule rounded-t-2xl sm:rounded-none shadow-[0_-18px_50px_-24px_rgba(0,0,0,.55)] sm:shadow-[0_24px_60px_-28px_rgba(0,0,0,.55)]";
 const LINE_LAYERS: MapLayer[] = ["polity", "migration", "trade"];
 const SHORT: Record<MapLayer, string> = {
@@ -31,13 +32,15 @@ const SHORT: Record<MapLayer, string> = {
   battle: "Battles",
   unesco: "UNESCO",
   fossil: "Fossils",
+  landscape: "Landscape",
 };
 
-type Theme = "political" | "languages" | "religion";
+type Theme = "political" | "languages" | "religion" | "landscape";
 const THEMES: { id: Theme; label: string; layers: MapLayer[] }[] = [
   { id: "political", label: "Political", layers: ["polity", "inscription", "port", "battle"] },
   { id: "languages", label: "Languages", layers: ["language"] },
   { id: "religion", label: "Religion", layers: ["religious", "temple"] },
+  { id: "landscape", label: "Landscape", layers: ["landscape"] },
 ];
 
 type Selected = { id: string; kind: "point" | "route" | "territory" } | null;
@@ -62,11 +65,13 @@ export function AtlasExplorer({
   const chooseTheme = (t: Theme) => {
     setTheme(t);
     setLayers(new Set(THEMES.find((x) => x.id === t)!.layers));
+    setCoast(t === "landscape");
     setSelected(null);
   };
   const [year, setYear] = useState(defaultYear);
   const [allTime, setAllTime] = useState(false);
   const [modern, setModern] = useState(false);
+  const [coast, setCoast] = useState(false);
   const [selected, setSelected] = useState<Selected>(null);
   const [legend, setLegend] = useState(false);
   const y = useDeferredValue(year);
@@ -81,11 +86,13 @@ export function AtlasExplorer({
     if (qy && !Number.isNaN(+qy)) setYear(+qy);
     const l = q.get("layers");
     if (l) setLayers(new Set(l.split(",").filter((x): x is MapLayer => ALL_LAYERS.includes(x as MapLayer))));
+    // Theme first: choosing a theme clears the selection a focus link sets.
+    const th = q.get("theme");
+    if (th === "languages" || th === "religion" || th === "landscape") chooseTheme(th);
+    if (q.get("coast") === "1") setCoast(true);
     const f = q.get("focus");
     if (f) setSelected({ id: f, kind: payload.points.some((p) => p.id === f) ? "point" : payload.territories.some((t) => t.polityId === f) ? "territory" : "route" });
     if (q.get("all") === "1") setAllTime(true);
-    const th = q.get("theme");
-    if (th === "languages" || th === "religion") chooseTheme(th);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -149,7 +156,8 @@ export function AtlasExplorer({
     });
   const solo = (l: MapLayer) => setLayers(new Set([l]));
 
-  const visible = points.length + routes.length + (boundaries ? shownPolities : 0);
+  const sea = useMemo(() => (coast && !allTime ? seaLevelAt(y) : null), [coast, allTime, y]);
+  const visible = points.length + routes.length + (boundaries ? shownPolities : 0) + (sea && sea.level <= -2.5 ? 1 : 0);
 
   return (
     <div
@@ -164,6 +172,7 @@ export function AtlasExplorer({
           boundaries={boundaries}
           onBoundariesShown={setShown}
           basemap={basemap}
+          seaLevel={sea ? sea.level : null}
           selectedId={selected?.id}
           modernLabels={modern}
           onSelect={(id, kind) => setSelected(id ? { id, kind: kind ?? "point" } : null)}
@@ -188,6 +197,9 @@ export function AtlasExplorer({
           <div className="pointer-events-auto flex gap-1.5 shrink-0">
             <ToolButton on={basemap === "terrain"} onClick={() => setBasemap((b) => (b === "plain" ? "terrain" : "plain"))} label="Terrain" title="Switch between a plain map and physical terrain">
               <path d="m2.5 18.5 6-9 4 5.5 2.5-3 6.5 6.5z" strokeLinejoin="round" />
+            </ToolButton>
+            <ToolButton on={coast} onClick={() => setCoast((v) => !v)} label="Sea level" title="Show the coastline as sea level changed, from 50,000 BCE">
+              <path d="M3 15c2.2-1.6 3.8-1.6 6 0s3.8 1.6 6 0 3.8-1.6 6 0M3 19.5c2.2-1.6 3.8-1.6 6 0s3.8 1.6 6 0 3.8-1.6 6 0M12 4v7m-2.8-2.6L12 11l2.8-2.6" strokeLinejoin="round" />
             </ToolButton>
             <ToolButton on={modern} onClick={() => setModern((m) => !m)} label="Modern borders" title="Overlay present-day international borders, for orientation">
               <path d="M4 6.5c3 1.5 4.5-1 7.5.5s3.5 4 8.5 2.5M4 14c3 1.5 4.5-1 7.5.5s3.5 4 8.5 2.5" strokeDasharray="2.4 2.2" />
@@ -235,6 +247,7 @@ export function AtlasExplorer({
           <div className="absolute top-[3.6rem] sm:top-12 right-3 z-[650] w-[min(300px,calc(100%-1.5rem))] max-h-[calc(100%-5rem)] overflow-y-auto bg-parchment border rule p-5 shadow-[0_20px_50px_-25px_rgba(0,0,0,.5)] text-[12.5px] leading-relaxed space-y-3">
             <p className="eyebrow">How to read this map</p>
             <p><span className="inline-block w-4 h-3 align-middle mr-1.5 bg-terracotta/50 border border-ink/40" />Kingdoms are drawn from <a className="underline" href={CLIOPATRIA_CITATION.repo} target="_blank" rel="noopener noreferrer">Cliopatria</a>, the Seshat Global History Databank&apos;s peer-reviewed boundary dataset (CC BY 4.0), exactly as published — one scholarly reconstruction among several. Where Cliopatria is blank, regions from <a className="underline" href={HBM_CITATION.repo} target="_blank" rel="noopener noreferrer">historical-basemaps</a> (GPL-3.0) fill the gap with dashed borders and italic names — a coarser, approximate source.</p>
+            <p><span className="inline-block w-4 h-3 align-middle mr-1.5 bg-[var(--map-shelf)] border border-dashed border-[var(--map-shelf-edge)]" />Sea level shows the coast as it stood in the chosen year: global sea level from Spratt &amp; Lisiecki (2016) applied to today&apos;s seafloor depths from NOAA ETOPO 2022. It does not allow for land rising or sinking, or for silt laid down since, so deltas and the exact shoreline are approximate. Diamonds in the Landscape theme mark documented changes such as rivers that moved; old river courses are not drawn.</p>
             <p>Language areas are not drawn: no sourced historical language-area dataset has been added yet. The Languages theme shows dated first inscriptions.</p>
             <p><span className="inline-block w-5 align-middle mr-1.5 border-t-2 border-dashed border-gold" />Trade routes join attested places; the lines between them are simplified.</p>
             <p><span className="inline-block w-5 align-middle mr-1.5 border-t-2 border-dotted border-sage-deep" />Migration arrows are modelled ancestry flows from ancient DNA, not paths walked.</p>
@@ -285,6 +298,10 @@ export function AtlasExplorer({
             </ul>
             <p className="mt-3 text-[11px] text-stone leading-snug">Counts of sites in this archive, not numbers of followers. Scroll through time to watch traditions appear and spread.</p>
           </div>
+        )}
+
+        {coast && !selected && (theme === "landscape" || theme === "political") && (
+          <SeaPanel year={year} allTime={allTime} />
         )}
 
         {/* Empty state */}
@@ -516,5 +533,45 @@ function ToolButton({ on, onClick, label, title, children }: { on: boolean; onCl
       </svg>
       <span className="hidden md:inline">{label}</span>
     </button>
+  );
+}
+
+/** Sea-level readout with the curve it comes from, for the coastline layer. */
+function SeaPanel({ year, allTime }: { year: number; allTime: boolean }) {
+  const W = 236, H = 64, MAXKA = 52, MIN = -135;
+  const px = (ka: number) => W - (ka / MAXKA) * W;
+  const py = (m: number) => (m / MIN) * H;
+  const pts = SEA_LEVEL.filter(([ka]) => ka <= MAXKA).map(([ka, m]) => `${px(ka).toFixed(1)},${py(Math.min(0, m)).toFixed(1)}`).join(" ");
+  const ka = (1950 - year) / 1000;
+  const s = seaLevelAt(year);
+  const near = s.level > -2.5;
+  return (
+    <div className="absolute right-3 bottom-7 sm:bottom-3 z-[500] w-[min(220px,calc(100%-1.5rem))] sm:w-[280px] bg-parchment/95 backdrop-blur border rule p-3 sm:p-4 shadow-[0_16px_40px_-24px_rgba(0,0,0,.5)]">
+      <p className="eyebrow">Sea level{allTime ? "" : ` · ${formatYear(year)}`}</p>
+      {allTime ? (
+        <p className="mt-1 text-[12.5px] text-stone">Pick a year to see the coastline of that time.</p>
+      ) : (
+        <p className="mt-1 font-display text-xl sm:text-2xl leading-tight">
+          {near ? "Close to today" : <>About {Math.round(-s.level)} m lower</>}
+          {!near && <span className="data text-[11px] text-stone ml-2">± {Math.round(s.err)} m</span>}
+        </p>
+      )}
+      <svg viewBox={`-2 -4 ${W + 4} ${H + 14}`} className="hidden sm:block mt-2 w-full h-auto" role="img" aria-label="Global sea level over the last 52,000 years">
+        <line x1={0} x2={W} y1={0} y2={0} className="stroke-ink/20" strokeWidth={0.8} />
+        <polyline points={pts} fill="none" className="stroke-terracotta" strokeWidth={1.5} strokeLinejoin="round" />
+        {!allTime && ka >= 0 && ka <= MAXKA && (
+          <>
+            <line x1={px(ka)} x2={px(ka)} y1={-3} y2={H + 2} className="stroke-ink/50" strokeWidth={0.8} strokeDasharray="2 2" />
+            <circle cx={px(ka)} cy={py(s.level)} r={3} className="fill-ink" />
+          </>
+        )}
+        <text x={0} y={H + 10} className="fill-stone data" fontSize={8}>50,000 BCE</text>
+        <text x={W} y={H + 10} textAnchor="end" className="fill-stone data" fontSize={8}>today</text>
+      </svg>
+      <p className="sm:hidden mt-1 text-[11px] text-stone leading-snug">Shaded ground was dry land. An approximate model; see the i panel.</p>
+      <p className="hidden sm:block mt-2 text-[11px] text-stone leading-snug">
+        Shaded ground was dry land when the sea stood this low. Curve: Spratt &amp; Lisiecki 2016; seafloor: NOAA ETOPO 2022. A bathtub model: it ignores land movement and the silt rivers have laid down since, so deltas and coasts are approximate.
+      </p>
+    </div>
   );
 }

@@ -42,6 +42,8 @@
   --map-sea: #dce5e1;
   --map-land: #f7f3ea;
   --map-coast: #b9ae97;
+  --map-shelf: #e8dcc0;
+  --map-shelf-edge: #a48b5c;
   --map-lake: #dce5e1;
   --map-lake-edge: #afc1bc;
   --map-river: #8faaa3;
@@ -78,6 +80,8 @@
   --map-sea: #0f1716;
   --map-land: #23241f;
   --map-coast: #4a463c;
+  --map-shelf: #312e24;
+  --map-shelf-edge: #7d6a48;
   --map-lake: #0f1716;
   --map-lake-edge: #2c3a37;
   --map-river: #3c5a54;
@@ -111,6 +115,8 @@
   --map-sea: #0f1716;
   --map-land: #23241f;
   --map-coast: #4a463c;
+  --map-shelf: #312e24;
+  --map-shelf-edge: #7d6a48;
   --map-lake: #0f1716;
   --map-lake-edge: #2c3a37;
   --map-river: #3c5a54;
