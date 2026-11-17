@@ -230,7 +230,7 @@ export function AtlasExplorer({
                   aria-pressed={on}
                   title={`${LAYER_META[l].label} — click to toggle, double-click to show only this`}
                   className={`shrink-0 inline-flex items-center gap-1.5 h-9 sm:h-8 pl-2 pr-2.5 text-[12px] border shadow-[0_6px_20px_-12px_rgba(0,0,0,.45)] transition-colors ${
-                    on ? "bg-ivory border-ink/20 text-ink" : "bg-ivory/70 backdrop-blur border-transparent text-stone hover:bg-ivory/90"
+                    on ? "bg-ivory border-ink/20 text-ink" : "bg-ivory/90 border-transparent text-stone hover:bg-ivory/90"
                   } ${n === 0 && on ? "opacity-70" : ""}`}
                 >
                   <Swatch layer={l} on={on} />
@@ -257,7 +257,7 @@ export function AtlasExplorer({
         )}
 
         {theme === "political" && shown.length > 0 && !selected && (
-          <div className={`absolute left-3 bottom-7 sm:bottom-3 z-[500] w-[min(260px,calc(100%-1.5rem))] bg-parchment/95 backdrop-blur border rule shadow-[0_16px_40px_-24px_rgba(0,0,0,.5)] ${listOpen ? "max-h-[60%]" : ""} flex flex-col`}>
+          <div className={`absolute left-3 bottom-7 sm:bottom-3 z-[500] w-[min(260px,calc(100%-1.5rem))] bg-parchment/[0.97] border rule shadow-[0_16px_40px_-24px_rgba(0,0,0,.5)] ${listOpen ? "max-h-[60%]" : ""} flex flex-col`}>
             <button onClick={() => setListOpen((o) => !o)} aria-expanded={listOpen} className="flex items-center justify-between px-4 py-2.5 text-left">
               <span className="eyebrow">Polities in {formatYear(year)} · {shownPolities}</span>
               <span className="data text-stone">{listOpen ? "–" : "+"}</span>
@@ -546,14 +546,14 @@ function SeaPanel({ year, allTime }: { year: number; allTime: boolean }) {
   const s = seaLevelAt(year);
   const near = s.level > -2.5;
   return (
-    <div className="absolute right-3 bottom-7 sm:bottom-3 z-[500] w-[min(220px,calc(100%-1.5rem))] sm:w-[280px] bg-parchment/95 backdrop-blur border rule p-3 sm:p-4 shadow-[0_16px_40px_-24px_rgba(0,0,0,.5)]">
+    <div className="absolute right-3 bottom-7 sm:bottom-3 z-[500] w-[min(220px,calc(100%-1.5rem))] sm:w-[280px] bg-parchment/[0.97] border rule p-3 sm:p-4 shadow-[0_16px_40px_-24px_rgba(0,0,0,.5)]">
       <p className="eyebrow">Sea level{allTime ? "" : ` · ${formatYear(year)}`}</p>
       {allTime ? (
         <p className="mt-1 text-[12.5px] text-stone">Pick a year to see the coastline of that time.</p>
       ) : (
         <p className="mt-1 font-display text-xl sm:text-2xl leading-tight">
           {near ? "Close to today" : <>About {Math.round(-s.level)} m lower</>}
-          {!near && <span className="data text-[11px] text-stone ml-2">± {Math.round(s.err)} m</span>}
+          {!near && <span className="data text-[11px] text-stone ml-2 whitespace-nowrap">± {Math.round(s.err)} m</span>}
         </p>
       )}
       <svg viewBox={`-2 -4 ${W + 4} ${H + 14}`} className="hidden sm:block mt-2 w-full h-auto" role="img" aria-label="Global sea level over the last 52,000 years">

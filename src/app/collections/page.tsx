@@ -18,7 +18,7 @@ export default function CollectionsPage() {
             <Plate image={c.image} aspect="aspect-[4/5]" showCaption={false} sizes="25vw" />
             <div>
               <p className="eyebrow">{c.items.length} entries</p>
-              <h2 className="font-display text-[1.9rem] leading-tight mt-2 group-hover:text-terracotta">{c.title}</h2>
+              <h2 className="font-display text-[1.5rem] sm:text-[1.9rem] leading-tight mt-2 hyphens-auto [overflow-wrap:anywhere] group-hover:text-terracotta">{c.title}</h2>
               <p className="text-sm text-stone mt-3">{c.summary}</p>
               <p className="data text-[11px] text-stone-light mt-4">Curated by {c.curator}</p>
             </div>

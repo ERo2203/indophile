@@ -71,6 +71,13 @@ export default function MapCanvas({
   const terrain = useRef<LT.TileLayer | null>(null);
   const shelf = useRef<LT.Polygon | null>(null);
   const shelfRenderer = useRef<LT.Canvas | null>(null);
+  // One canvas per pane for the whole life of the map. Creating renderers per
+  // redraw left a new <canvas> behind on every year step.
+  const polyRenderer = useRef<LT.Canvas | null>(null);
+  const underRendererRef = useRef<LT.Canvas | null>(null);
+  /** Signature of what the boundary layer currently shows; unchanged → no redraw. */
+  const drawnSig = useRef("");
+  const declutterRef = useRef<() => void>(() => {});
   const onSelectRef = useRef(onSelect);
   onSelectRef.current = onSelect;
   const [ready, setReadyTick] = useState(0);
@@ -138,6 +145,7 @@ export default function MapCanvas({
       m.createPane("polities").style.zIndex = "300";
       m.createPane("areaLabels").style.zIndex = "450";
       boundaryLayer.current = leaflet.layerGroup().addTo(m);
+      m.on("zoomend", () => declutterRef.current());
       m.attributionControl.addAttribution(CLIOPATRIA_CREDIT);
       m.attributionControl.addAttribution(HBM_CREDIT);
       m.on("click", () => onSelectRef.current?.(null));
@@ -224,13 +232,14 @@ export default function MapCanvas({
   useEffect(() => {
     const m = map.current, leaflet = L.current, group = boundaryLayer.current;
     if (!m || !leaflet || !group) return;
-    group.clearLayers();
     if (!boundaries) {
+      group.clearLayers();
+      drawnSig.current = "";
+      declutterRef.current = () => {};
       onShownRef.current?.([]);
       return;
     }
     let alive = true;
-    let unbind = () => {};
     (async () => {
       const [clioAll, hbmAll] = await Promise.all([loadPolities(), boundaries.only ? Promise.resolve([] as HbmFeature[]) : loadHbm()]);
       if (!alive) return;
@@ -253,9 +262,14 @@ export default function MapCanvas({
         ...clioShown.map((f) => ({ key: clioKey(f.properties.n, f.properties.f), name: f.properties.n, src: "cliopatria" as const, f, bbox: featBbox(f), area: ringArea(largestRing(f)) })),
         ...hbmShown.map((f) => ({ key: `hbm:${f.properties.n}|${f.properties.f}`, name: f.properties.n, src: "hbm" as const, f, bbox: featBbox(f), area: ringArea(largestRing(f)) })),
       ];
+      // Most year steps show the same territories as the step before: keep them.
+      const sig = `${items.map((i) => i.key).join(",")}|${selectedId ?? ""}|${interactive ? 1 : 0}|${ready}`;
+      if (sig === drawnSig.current) return;
+      drawnSig.current = sig;
+      group.clearLayers();
       assignColours(items);
 
-      const renderer = leaflet.canvas({ pane: "polities", padding: 0.3 });
+      const renderer = (polyRenderer.current ??= leaflet.canvas({ pane: "polities", padding: 0.3 }));
       // Names are placed largest territory first; one that would sit on top of
       // another is hidden until the map is zoomed far enough to separate them.
       const labels: { mk: LT.Marker; area: number; w: number; h: number; sel: boolean }[] = [];
@@ -294,7 +308,7 @@ export default function MapCanvas({
           labels.push({ mk, area: it.area, w: it.name.length * fs * 0.5 + 8, h: fs * 1.25, sel });
         }
       };
-      const underRenderer = leaflet.canvas({ pane: "politiesUnder", padding: 0.3 });
+      const underRenderer = (underRendererRef.current ??= leaflet.canvas({ pane: "politiesUnder", padding: 0.3 }));
       items.filter((i) => i.src === "hbm").forEach(draw);
       items.filter((i) => i.src === "cliopatria").forEach(draw);
       labels.sort((a, b) => Number(b.sel) - Number(a.sel) || b.area - a.area);
@@ -309,9 +323,8 @@ export default function MapCanvas({
           if (!hit) placed.push(box);
         }
       };
+      declutterRef.current = declutter;
       declutter();
-      m.on("zoomend", declutter);
-      unbind = () => m.off("zoomend", declutter);
       onShownRef.current?.(
         items
           .sort((a, b) => b.area - a.area)
@@ -328,12 +341,17 @@ export default function MapCanvas({
     })();
     return () => {
       alive = false;
-      unbind();
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [bKey, ready]);
 
-  // Draw data
+  // Draw data — only when the visible points, routes or selection change.
+  // Points are recomputed by the parent on every year step; most steps keep
+  // the same set, so compare by content rather than by array identity.
+  const dataKey =
+    points.map((p) => `${p.id}:${p.color ?? ""}`).join(",") +
+    "|" + routes.map((r) => r.id).join(",") +
+    "|" + (selectedId ?? "") + "|" + (colorBy ?? []).join(",") + "|" + (showLabels ? 1 : 0) + (interactive ? 1 : 0);
   useEffect(() => {
     const m = map.current, leaflet = L.current, group = dataLayer.current;
     if (!m || !leaflet || !group) return;
@@ -382,7 +400,8 @@ export default function MapCanvas({
       routes.forEach((r) => r.path.forEach((pt) => b.extend(pt)));
       m.fitBounds(b.pad(points.length === 1 ? 2.5 : 0.25), { maxZoom: points.length === 1 ? 7 : 8, animate: false });
     }
-  });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [dataKey, ready]);
 
   return <div ref={el} className={className} role="application" aria-label="Interactive historical map" />;
 }

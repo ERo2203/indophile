@@ -44,8 +44,8 @@ export default function SourcesPage() {
                       <p className="leading-relaxed">
                         {s.authors} ({s.year}). <em className="font-display text-[1.1rem]">{s.title}</em>
                         {s.container && <>. {s.container}</>}{s.publisher && <>. {s.publisher}</>}.
-                        {s.doi && <> <a href={`https://doi.org/${s.doi}`} className="data text-terracotta hover:underline" target="_blank" rel="noopener noreferrer">doi:{s.doi}</a></>}
-                        {s.url && <> <a href={s.url} className="data text-terracotta hover:underline" target="_blank" rel="noopener noreferrer">{s.url.replace(/^https?:\/\//, "")}</a></>}
+                        {s.doi && <> <a href={`https://doi.org/${s.doi}`} className="data text-terracotta hover:underline [overflow-wrap:anywhere]" target="_blank" rel="noopener noreferrer">doi:{s.doi}</a></>}
+                        {s.url && <> <a href={s.url} className="data text-terracotta hover:underline [overflow-wrap:anywhere]" target="_blank" rel="noopener noreferrer">{s.url.replace(/^https?:\/\//, "")}</a></>}
                         {!s.verified && <span className="ml-2 data text-[11px] text-terracotta border border-terracotta/40 px-1">record unverified</span>}
                       </p>
                       <details className="text-[13px]">

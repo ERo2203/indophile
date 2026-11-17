@@ -70,7 +70,25 @@ export function parseYear(raw: string): number | null {
 
 const SPEEDS = [1, 2, 4] as const;
 
-const MAJOR = [-50000, -40000, -30000, -20000, -10000, -8000, -6000, -4000, -3000, -2500, -2000, -1500, -1000, -750, -500, -250, 1, 250, 500, 750, 1000, 1250, 1500, 1750, 1947];
+/**
+ * The ruler never changes, so it is built once at module load instead of on
+ * every year step. Minor ticks are one repeating background, not 180 nodes.
+ */
+const TICKS = (
+  <>
+    <div
+      className="absolute top-0 inset-x-0 h-1"
+      style={{ backgroundImage: "linear-gradient(90deg, rgb(250 248 242 / .15) 1px, transparent 1px)", backgroundSize: "22px 100%" }}
+      aria-hidden
+    />
+    {[-50000, -40000, -30000, -20000, -10000, -8000, -6000, -4000, -3000, -2500, -2000, -1500, -1000, -750, -500, -250, 1, 250, 500, 750, 1000, 1250, 1500, 1750, 1947].map((y) => (
+      <div key={y} className="absolute top-0 h-full" style={{ left: yearToX(y) }} aria-hidden>
+        <div className="w-px h-2.5 bg-paper/50" />
+        <span className="absolute top-3 -translate-x-1/2 data text-[11px] text-paper/65 whitespace-nowrap">{tickLabel(y)}</span>
+      </div>
+    ))}
+  </>
+);
 
 function tickLabel(y: number) {
   if (y === 1) return "1 CE";
@@ -283,14 +301,14 @@ export function TimeScroller({
   const ROW_H = compact ? 20 : 24;
 
   return (
-    <div className="bg-night/[0.93] backdrop-blur-md text-paper border-t border-paper/10 shadow-[0_-20px_50px_-30px_rgba(0,0,0,.6)]">
+    <div className="bg-night/[0.97] text-paper border-t border-paper/10 shadow-[0_-20px_50px_-30px_rgba(0,0,0,.6)]">
       <div className="flex flex-col sm:flex-row items-stretch">
         {/* Readout */}
         <div className={`shrink-0 flex flex-row sm:flex-col items-center sm:items-stretch justify-between sm:justify-center gap-x-3 border-b sm:border-b-0 sm:border-r border-paper/10 ${compact ? "sm:w-[170px] px-4 py-2.5 sm:py-3" : "sm:w-[250px] px-4 sm:px-5 py-2.5 sm:py-4"}`}>
           <div className="min-w-0">
           <p className="data text-[11px] uppercase tracking-[0.16em] text-gold">{allTime ? "Showing" : `${stepFor(year).toLocaleString("en")}-year steps`}</p>
-          <p className={`font-display leading-none mt-1.5 tabular-nums text-[1.55rem] whitespace-nowrap ${compact ? "sm:text-[1.9rem]" : "sm:text-[2.5rem]"} ${allTime ? "text-paper/40" : ""}`} aria-live="polite">
-            {allTime ? "All periods" : formatYear(year)}
+          <p className={`font-display leading-none mt-1.5 tabular-nums whitespace-nowrap ${formatYear(year).length > 12 ? `text-[1.35rem] ${compact ? "sm:text-[1.6rem]" : "sm:text-[2.05rem]"}` : `text-[1.55rem] ${compact ? "sm:text-[1.9rem]" : "sm:text-[2.5rem]"}`} ${allTime ? "text-paper/40" : ""}`} aria-live="polite">
+            {allTime ? "All periods" : <YearReadout label={formatYear(year)} />}
           </p>
           {!compact && (
             <p className="hidden sm:block text-[12.5px] text-paper/70 mt-2 leading-snug line-clamp-2 min-h-[2.4em]">
@@ -299,11 +317,11 @@ export function TimeScroller({
           )}
           </div>
           <div className="flex items-center gap-1 sm:gap-1.5 sm:mt-3 shrink-0">
-            <IconBtn label="Step back" onClick={() => step(-1)} disabled={allTime}>‹</IconBtn>
+            <IconBtn label="Step back" onClick={() => step(-1)} disabled={allTime}><path d="M14.5 6 8.5 12l6 6" /></IconBtn>
             <IconBtn label={playing ? "Pause" : "Play through time"} onClick={() => { onAllTime(false); setPlaying((p) => !p); }} active={playing}>
-              {playing ? "❚❚" : "▶"}
+              {playing ? <path d="M9 6.5v11M15 6.5v11" strokeWidth={2.2} /> : <path d="M8.5 6.2v11.6L17.8 12z" fill="currentColor" strokeLinejoin="round" />}
             </IconBtn>
-            <IconBtn label="Step forward" onClick={() => step(1)} disabled={allTime}>›</IconBtn>
+            <IconBtn label="Step forward" onClick={() => step(1)} disabled={allTime}><path d="m9.5 6 6 6-6 6" /></IconBtn>
             <button
               onClick={() => setSpeed((v) => SPEEDS[(SPEEDS.indexOf(v) + 1) % SPEEDS.length])}
               aria-label={`Playback speed ${speed}×, click to change`}
@@ -371,17 +389,7 @@ export function TimeScroller({
           >
             <div className="relative" style={{ width: TOTAL + half * 2, height: (compact ? 28 : 36) + rowCount * ROW_H + 8 }}>
               <div className="absolute top-0 bottom-0" style={{ left: half, width: TOTAL }}>
-                {/* ticks */}
-                {MAJOR.map((y) => (
-                  <div key={y} className="absolute top-0 h-full" style={{ left: yearToX(y) }}>
-                    <div className="w-px h-2.5 bg-paper/50" />
-                    <span className="absolute top-3 -translate-x-1/2 data text-[11px] text-paper/65 whitespace-nowrap">{tickLabel(y)}</span>
-                  </div>
-                ))}
-                {/* minor ticks */}
-                {Array.from({ length: Math.floor(TOTAL / 22) }, (_, i) => (
-                  <div key={i} className="absolute top-0 w-px h-1 bg-paper/15" style={{ left: i * 22 }} />
-                ))}
+                {TICKS}
                 {/* period bands */}
                 <div className="absolute inset-x-0" style={{ top: compact ? 28 : 34 }}>
                   {bands.map((b) => {
@@ -432,7 +440,24 @@ function IconBtn({ label, onClick, children, disabled, active }: { label: string
         active ? "bg-paper text-night border-paper" : "border-paper/25 text-paper/80 hover:border-paper/60 hover:text-paper"
       }`}
     >
-      {children}
+      <svg viewBox="0 0 24 24" className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth={1.7} strokeLinecap="round" strokeLinejoin="round" aria-hidden>
+        {children}
+      </svg>
     </button>
+  );
+}
+
+/**
+ * The year in two weights: the number large, the era small beside it, so a
+ * long label like "18,000 years ago" fits the readout column at any width.
+ */
+function YearReadout({ label }: { label: string }) {
+  const i = label.indexOf(" ");
+  if (i < 0) return <>{label}</>;
+  return (
+    <>
+      {label.slice(0, i)}
+      <span className="ml-1.5 font-sans text-[0.42em] tracking-[0.08em] uppercase text-paper/70 align-[0.35em]">{label.slice(i + 1)}</span>
+    </>
   );
 }

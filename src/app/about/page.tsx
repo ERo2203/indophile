@@ -15,7 +15,7 @@ export default function AboutPage() {
         intro="Indophile is a digital knowledge platform for the history, archaeology, archaeogenetics, geography, languages, religions and material culture of the Indian subcontinent — built as one interconnected, evidence-driven database."
         image={{ id: "bhimbetka", caption: "Painted rock surface, Bhimbetka." }}
       />
-      <div className="container-ind pb-24 grid lg:grid-cols-[1fr_1fr] gap-16">
+      <div className="container-ind pb-24 grid grid-cols-[minmax(0,1fr)] lg:grid-cols-[minmax(0,1fr)_minmax(0,1fr)] gap-16">
         <div className="prose-ind space-y-5">
           <p className="dropcap">
             Most of what we know about the deep past of South Asia comes not from chronicles but from evidence in the ground: a stone tool in a river terrace, a seal in a drain, an edict on a boulder, a genome from a cemetery. Indophile is built around that evidence.

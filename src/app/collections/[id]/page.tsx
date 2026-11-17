@@ -27,7 +27,7 @@ export default async function CollectionPage({ params }: { params: Promise<{ id:
 
   return (
     <div>
-      <header className="container-ind pt-10 pb-14 grid lg:grid-cols-[1fr_1fr] gap-12 items-end">
+      <header className="container-ind pt-10 pb-14 grid grid-cols-[minmax(0,1fr)] lg:grid-cols-[minmax(0,1fr)_minmax(0,1fr)] gap-12 items-end">
         <div>
           <Breadcrumbs trail={[["Home", "/"], ["Collections", "/collections"], [c.title]]} />
           <p className="rubric mt-10">Curated collection · {items.length} entries</p>

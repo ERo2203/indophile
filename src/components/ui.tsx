@@ -258,16 +258,16 @@ export function SourceList({ sources, title = "Sources & further reading" }: { s
       <ol className="space-y-4">
         {sources.map((s) => (
           <li key={s.id} id={`src-${s.id}`} className="grid grid-cols-[auto_1fr] gap-4 text-sm leading-relaxed scroll-mt-28 target:bg-gold/15">
-            <span className="data text-[11px] uppercase tracking-wider text-stone pt-1 w-24">{s.kind.replace(/-/g, " ")}</span>
+            <span className="data text-[11px] uppercase tracking-wider text-stone pt-1 w-28 shrink-0">{s.kind.replace(/-/g, " ")}</span>
             <span>
               {s.authors} ({s.year}). <em className="font-display text-[1.05rem]">{s.title}</em>
               {s.container && <>. {s.container}</>}
               {s.publisher && <>. {s.publisher}</>}.
               {s.doi && (
-                <> <a className="data text-terracotta hover:underline" href={`https://doi.org/${s.doi}`} target="_blank" rel="noopener noreferrer">doi:{s.doi}</a></>
+                <> <a className="data text-terracotta hover:underline [overflow-wrap:anywhere]" href={`https://doi.org/${s.doi}`} target="_blank" rel="noopener noreferrer">doi:{s.doi}</a></>
               )}
               {s.url && (
-                <> <a className="data text-terracotta hover:underline" href={s.url} target="_blank" rel="noopener noreferrer">{s.url.replace(/^https?:\/\//, "")}</a></>
+                <> <a className="data text-terracotta hover:underline [overflow-wrap:anywhere]" href={s.url} target="_blank" rel="noopener noreferrer">{s.url.replace(/^https?:\/\//, "")}</a></>
               )}
               {!s.verified && <span className="ml-2 data text-[11px] text-terracotta border border-terracotta/40 px-1">record unverified</span>}
             </span>

@@ -91,7 +91,7 @@ export default function Home() {
         </div>
 
         {/* Scale strip */}
-        <div className="relative border-y rule bg-ivory/70 backdrop-blur-sm">
+        <div className="relative border-y rule bg-ivory/90">
           <dl className="container-ind grid grid-cols-2 md:grid-cols-4 divide-x rule">
             {stats.map((s) => (
               <div key={s.label} className="py-6 px-4 first:pl-0">

@@ -35,15 +35,15 @@ export function AncestryCalculator({ specimens, links }: { specimens: Specimen[]
   return (
     <div>
       <div className="flex flex-wrap gap-3 items-end mb-8">
-        <label className="flex flex-col gap-1">
+        <label className="flex flex-col gap-1 w-full sm:w-auto">
           <span className="eyebrow">Specimen</span>
-          <select className="bg-ivory border rule px-3 py-2 text-sm min-w-[280px]" value={a} onChange={(e) => setA(e.target.value)}>
+          <select className="bg-ivory border rule px-3 py-2 text-sm w-full sm:w-auto sm:min-w-[280px]" value={a} onChange={(e) => setA(e.target.value)}>
             {specimens.map((s) => <option key={s.id} value={s.id}>{s.label}</option>)}
           </select>
         </label>
-        <label className="flex flex-col gap-1">
+        <label className="flex flex-col gap-1 w-full sm:w-auto">
           <span className="eyebrow">Compare with</span>
-          <select className="bg-ivory border rule px-3 py-2 text-sm min-w-[280px]" value={b} onChange={(e) => setB(e.target.value)}>
+          <select className="bg-ivory border rule px-3 py-2 text-sm w-full sm:w-auto sm:min-w-[280px]" value={b} onChange={(e) => setB(e.target.value)}>
             <option value="">— none —</option>
             {specimens.filter((s) => s.id !== a).map((s) => <option key={s.id} value={s.id}>{s.label}</option>)}
           </select>

@@ -43,9 +43,9 @@ export default function DeepTimePage() {
       />
 
       <section className="container-ind pb-16">
-        <div className="grid grid-cols-5 border rule text-[12px]">
+        <div className="grid grid-cols-2 sm:grid-cols-5 border-l border-t rule text-[12px]">
           {ERAS.map((e) => (
-            <div key={e.label} className="p-4 border-r rule last:border-0 bg-ivory">
+            <div key={e.label} className="min-w-0 p-4 border-r border-b rule bg-ivory last:col-span-2 sm:last:col-span-1">
               <p className="font-display text-xl">{e.label}</p>
               <p className="data text-[11px] text-stone">{age(e.from)} – {age(e.to)}</p>
               <p className="mt-2 text-stone leading-snug hidden sm:block">{e.note}</p>
@@ -73,7 +73,7 @@ export default function DeepTimePage() {
         </div>
       </section>
 
-      <section className="container-ind py-20 grid lg:grid-cols-[1fr_1fr] gap-12">
+      <section className="container-ind py-20 grid grid-cols-[minmax(0,1fr)] lg:grid-cols-[minmax(0,1fr)_minmax(0,1fr)] gap-12">
         <div>
           <p className="rubric mb-2">Conclusions</p>
           <h2 className="h2">What deep time tells us</h2>

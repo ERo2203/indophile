@@ -131,7 +131,7 @@ export function TimelineExplorer({ items, bands }: { items: TimelineItem[]; band
       </div>
 
       {/* Filters */}
-      <div className="sticky top-16 z-30 bg-parchment/95 backdrop-blur border-b rule mt-8">
+      <div className="sticky top-16 z-30 bg-parchment/[0.97] border-b rule mt-8">
         <div className="container-ind py-4 flex flex-col gap-3">
           <div className="flex flex-wrap items-center gap-2">
             <span className="eyebrow mr-2">Range</span>

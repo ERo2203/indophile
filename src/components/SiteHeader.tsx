@@ -48,7 +48,7 @@ export function SiteHeader() {
   return (
     <header
       className={`sticky top-0 z-50 transition-colors duration-300 ${
-        scrolled || immersive || open ? "bg-parchment/92 backdrop-blur-md border-b rule" : "bg-transparent border-b border-transparent"
+        scrolled || immersive || open ? "bg-parchment/[0.97] border-b rule" : "bg-transparent border-b border-transparent"
       }`}
     >
       <div className="container-ind flex h-16 items-center justify-between gap-4 xl:gap-6">
