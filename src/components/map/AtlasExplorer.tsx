@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import Image from "next/image";
-import { useDeferredValue, useEffect, useMemo, useState } from "react";
+import { useDeferredValue, useEffect, useMemo, useRef, useState } from "react";
 import type { MapLayer } from "@/lib/types";
 import type { MapPayload } from "@/lib/maptypes";
 import { LAYER_META, TRADITION_COLORS, primaryLayer } from "@/lib/maptypes";
@@ -36,11 +36,22 @@ const SHORT: Record<MapLayer, string> = {
 };
 
 type Theme = "political" | "languages" | "religion" | "landscape";
+/** Themes are starting points: each picks a set of layers, which can then be changed freely. */
 const THEMES: { id: Theme; label: string; layers: MapLayer[] }[] = [
   { id: "political", label: "Political", layers: ["polity", "inscription", "port", "battle"] },
-  { id: "languages", label: "Languages", layers: ["language"] },
   { id: "religion", label: "Religion", layers: ["religious", "temple"] },
+  { id: "languages", label: "Languages", layers: ["language"] },
   { id: "landscape", label: "Landscape", layers: ["landscape"] },
+];
+
+/** Layers grouped by what they show, in the order a reader is likely to want them. */
+const GROUPS: { label: string; layers: MapLayer[] }[] = [
+  { label: "Territories and movement", layers: ["polity", "trade", "migration"] },
+  { label: "Places", layers: ["archaeological", "settlement", "port"] },
+  { label: "Faith and culture", layers: ["religious", "temple", "hotspot"] },
+  { label: "Writing", layers: ["inscription", "language"] },
+  { label: "Events and heritage", layers: ["battle", "unesco"] },
+  { label: "Land and deep time", layers: ["landscape", "fossil"] },
 ];
 
 type Selected = { id: string; kind: "point" | "route" | "territory" } | null;
@@ -74,6 +85,9 @@ export function AtlasExplorer({
   const [coast, setCoast] = useState(false);
   const [selected, setSelected] = useState<Selected>(null);
   const [legend, setLegend] = useState(false);
+  const [panel, setPanel] = useState(false);
+  const panelRef = useRef<HTMLDivElement>(null);
+  const panelBtn = useRef<HTMLButtonElement>(null);
   const y = useDeferredValue(year);
   // Read once on the client; the map itself only mounts client-side.
   const [narrow] = useState(() => typeof window !== "undefined" && window.innerWidth < 640);
@@ -98,10 +112,31 @@ export function AtlasExplorer({
 
   useEffect(() => {
     if (!selected) return;
-    const onKey = (e: KeyboardEvent) => e.key === "Escape" && setSelected(null);
+    const onKey = (e: KeyboardEvent) => e.key === "Escape" && !panel && setSelected(null);
     window.addEventListener("keydown", onKey);
     return () => window.removeEventListener("keydown", onKey);
-  }, [selected]);
+  }, [selected, panel]);
+
+  // The layers panel closes on Escape or a press outside it.
+  useEffect(() => {
+    if (!panel) return;
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key !== "Escape") return;
+      setPanel(false);
+      panelBtn.current?.focus();
+    };
+    const onDown = (e: PointerEvent) => {
+      const t = e.target as Node;
+      if (panelRef.current?.contains(t) || panelBtn.current?.contains(t)) return;
+      setPanel(false);
+    };
+    window.addEventListener("keydown", onKey);
+    document.addEventListener("pointerdown", onDown);
+    return () => {
+      window.removeEventListener("keydown", onKey);
+      document.removeEventListener("pointerdown", onDown);
+    };
+  }, [panel]);
 
   const inTime = (start: number, end: number) => allTime || (start <= y && y <= end);
 
@@ -123,8 +158,8 @@ export function AtlasExplorer({
   const [listOpen, setListOpen] = useState(false);
   const shownPolities = new Set(shown.map((x) => x.name)).size;
   const boundaries = useMemo(
-    () => (theme === "political" && layers.has("polity") && !allTime ? { year: y } : null),
-    [theme, layers, allTime, y],
+    () => (layers.has("polity") && !allTime ? { year: y } : null),
+    [layers, allTime, y],
   );
 
   const religionCounts = useMemo(() => {
@@ -179,35 +214,44 @@ export function AtlasExplorer({
           initialView={initialView ?? (isPreview || narrow ? { center: [21, 78], zoom: 4 } : { center: [21.5, 77], zoom: 5 })}
         />
 
-        {/* Row 1 — theme switch and map utilities */}
-        <div className="absolute top-3 left-3 sm:left-14 right-3 z-[520] flex items-start justify-between gap-2 pointer-events-none">
-          <div className="pointer-events-auto flex gap-px bg-ink/15 border border-ink/15 shadow-[0_6px_20px_-12px_rgba(0,0,0,.45)]" role="tablist" aria-label="Map theme">
-            {THEMES.map((t) => (
-              <button
-                key={t.id}
-                role="tab"
-                aria-selected={theme === t.id}
-                onClick={() => chooseTheme(t.id)}
-                className={`h-9 sm:h-8 px-2.5 sm:px-3 text-[12px] font-medium transition-colors ${theme === t.id ? "bg-ink text-parchment" : "bg-ivory/95 text-ink hover:bg-ivory"}`}
-              >
-                {t.label}
-              </button>
-            ))}
+        {/* Top bar — theme presets on the left, layers and key on the right */}
+        <div className="absolute top-3 left-3 sm:left-14 right-3 z-[520] flex items-center gap-2 pointer-events-none">
+          <div className="pointer-events-auto min-w-0 overflow-x-auto no-scrollbar shadow-[0_6px_20px_-12px_rgba(0,0,0,.45)]">
+            <div className="flex w-max gap-px bg-ink/15 border border-ink/15" role="tablist" aria-label="Map theme">
+              {THEMES.map((t) => (
+                <button
+                  key={t.id}
+                  role="tab"
+                  aria-selected={theme === t.id}
+                  onClick={() => chooseTheme(t.id)}
+                  title={`${t.label}: ${t.layers.map((l) => LAYER_META[l].label.toLowerCase()).join(", ")}`}
+                  className={`h-9 sm:h-8 px-2 sm:px-3 text-[12px] font-medium transition-colors ${theme === t.id ? "bg-ink text-parchment" : "bg-ivory/95 text-ink hover:bg-ivory"}`}
+                >
+                  {t.label}
+                </button>
+              ))}
+            </div>
           </div>
-          <div className="pointer-events-auto flex gap-1.5 shrink-0">
-            <ToolButton on={basemap === "terrain"} onClick={() => setBasemap((b) => (b === "plain" ? "terrain" : "plain"))} label="Terrain" title="Switch between a plain map and physical terrain">
-              <path d="m2.5 18.5 6-9 4 5.5 2.5-3 6.5 6.5z" strokeLinejoin="round" />
-            </ToolButton>
-            <ToolButton on={coast} onClick={() => setCoast((v) => !v)} label="Sea level" title="Show the coastline as sea level changed, from 50,000 BCE">
-              <path d="M3 15c2.2-1.6 3.8-1.6 6 0s3.8 1.6 6 0 3.8-1.6 6 0M3 19.5c2.2-1.6 3.8-1.6 6 0s3.8 1.6 6 0 3.8-1.6 6 0M12 4v7m-2.8-2.6L12 11l2.8-2.6" strokeLinejoin="round" />
-            </ToolButton>
-            <ToolButton on={modern} onClick={() => setModern((m) => !m)} label="Modern borders" title="Overlay present-day international borders, for orientation">
-              <path d="M4 6.5c3 1.5 4.5-1 7.5.5s3.5 4 8.5 2.5M4 14c3 1.5 4.5-1 7.5.5s3.5 4 8.5 2.5" strokeDasharray="2.4 2.2" />
-            </ToolButton>
+          <div className="ml-auto pointer-events-auto flex gap-1.5 shrink-0">
             <button
-              onClick={() => setLegend((v) => !v)}
+              ref={panelBtn}
+              onClick={() => { setPanel((v) => !v); setLegend(false); }}
+              aria-expanded={panel}
+              aria-controls="atlas-layers"
+              title="Choose what the map shows"
+              className={`h-9 sm:h-8 w-9 sm:w-auto justify-center sm:pl-2.5 sm:pr-2.5 inline-flex items-center gap-1.5 border text-[12px] font-medium shadow-[0_6px_20px_-12px_rgba(0,0,0,.45)] transition-colors ${panel ? "bg-ink text-parchment border-ink" : "bg-ivory/95 border-ink/10 text-ink hover:bg-ivory"}`}
+            >
+              <svg viewBox="0 0 24 24" className="w-4 h-4 shrink-0" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinejoin="round" aria-hidden>
+                <path d="m12 4 8.5 4.5L12 13 3.5 8.5z" />
+                <path d="m3.5 12.5 8.5 4.5 8.5-4.5M3.5 16.5 12 21l8.5-4.5" strokeLinecap="round" />
+              </svg>
+              <span className="hidden sm:inline">Layers</span>
+              <span className={`hidden sm:inline data text-[11px] tabular-nums min-w-4 text-center ${panel ? "text-parchment/70" : "text-stone"}`}>{layers.size + (coast ? 1 : 0) + (modern ? 1 : 0) + (basemap === "terrain" ? 1 : 0)}</span>
+            </button>
+            <button
+              onClick={() => { setLegend((v) => !v); setPanel(false); }}
               aria-expanded={legend}
-              className={`h-9 w-9 sm:h-8 sm:w-8 border font-display italic text-lg leading-none shadow-[0_6px_20px_-12px_rgba(0,0,0,.45)] transition-colors ${legend ? "bg-ink text-parchment border-ink" : "bg-ivory/95 border-ink/10 text-ink hover:bg-ivory"}`}
+              className={`hidden sm:block h-9 w-9 sm:h-8 sm:w-8 border font-display italic text-lg leading-none shadow-[0_6px_20px_-12px_rgba(0,0,0,.45)] transition-colors ${legend ? "bg-ink text-parchment border-ink" : "bg-ivory/95 border-ink/10 text-ink hover:bg-ivory"}`}
               title="How to read this map"
               aria-label="How to read this map"
             >
@@ -216,32 +260,49 @@ export function AtlasExplorer({
           </div>
         </div>
 
-        {/* Row 2 — layer filters, a full-width scrolling strip */}
+        {/* What the map shows now: one chip per active layer, each removable */}
         <div className="absolute top-[3.6rem] sm:top-14 left-0 sm:left-14 right-0 z-[500] pointer-events-none">
-          <div className="atlas-chips no-scrollbar flex gap-1.5 overflow-x-auto pointer-events-auto px-3 sm:pl-0 pb-2" role="group" aria-label="Map layers">
-            {ALL_LAYERS.map((l) => {
-              const on = layers.has(l);
-              const n = counts[l] ?? 0;
-              return (
-                <button
-                  key={l}
-                  onClick={() => toggle(l)}
-                  onDoubleClick={() => solo(l)}
-                  aria-pressed={on}
-                  title={`${LAYER_META[l].label} — click to toggle, double-click to show only this`}
-                  className={`shrink-0 inline-flex items-center gap-1.5 h-9 sm:h-8 pl-2 pr-2.5 text-[12px] border shadow-[0_6px_20px_-12px_rgba(0,0,0,.45)] transition-colors ${
-                    on ? "bg-ivory border-ink/20 text-ink" : "bg-ivory/90 border-transparent text-stone hover:bg-ivory/90"
-                  } ${n === 0 && on ? "opacity-70" : ""}`}
-                >
-                  <Swatch layer={l} on={on} />
-                  {SHORT[l]}
-                  <span className={`data text-[11px] tabular-nums ${on ? "text-stone" : "text-stone-light"}`}>{n}</span>
-                </button>
-              );
-            })}
+          <div className="no-scrollbar flex gap-1.5 overflow-x-auto px-3 sm:pl-0 pb-2 [mask-image:linear-gradient(to_right,#000_calc(100%-24px),transparent)] sm:[mask-image:none]" role="group" aria-label="Layers shown">
+            {ALL_LAYERS.filter((l) => layers.has(l)).map((l) => (
+              <ActiveChip key={l} label={SHORT[l]} count={l === "polity" && allTime ? undefined : counts[l] ?? 0} onRemove={() => toggle(l)}>
+                <Swatch layer={l} on />
+              </ActiveChip>
+            ))}
+            {basemap === "terrain" && <ActiveChip label="Terrain" onRemove={() => setBasemap("plain")} />}
+            {coast && <ActiveChip label="Sea level" onRemove={() => setCoast(false)} />}
+            {modern && <ActiveChip label="Modern borders" onRemove={() => setModern(false)} />}
+            {layers.size === 0 && (
+              <button onClick={() => setPanel(true)} className="pointer-events-auto shrink-0 h-8 px-3 text-[12px] bg-ivory border border-dashed border-ink/30 text-stone hover:text-ink">
+                No layers shown · choose layers
+              </button>
+            )}
             <span className="shrink-0 w-3 sm:w-1" aria-hidden />
           </div>
         </div>
+
+        {panel && (
+          <>
+            <button aria-label="Close layers" tabIndex={-1} onClick={() => setPanel(false)} className="sm:hidden absolute inset-0 z-[710] bg-ink/25" />
+            <LayersPanel
+              ref={panelRef}
+              theme={THEMES.find((t) => t.id === theme)!}
+              year={allTime ? null : year}
+              layers={layers}
+              counts={counts}
+              onToggle={toggle}
+              onSolo={solo}
+              onReset={() => chooseTheme(theme)}
+              onClear={() => setLayers(new Set())}
+              onClose={() => setPanel(false)}
+              onKey={() => { setPanel(false); setLegend(true); }}
+              base={[
+                { id: "terrain", label: "Terrain", note: "Shaded relief instead of the plain map", on: basemap === "terrain", toggle: () => setBasemap((b) => (b === "plain" ? "terrain" : "plain")) },
+                { id: "coast", label: "Sea level", note: "The coastline as the sea rose and fell, from 50,000 BCE", on: coast, toggle: () => setCoast((v) => !v) },
+                { id: "modern", label: "Modern borders", note: "Today's international borders, for orientation", on: modern, toggle: () => setModern((v) => !v) },
+              ]}
+            />
+          </>
+        )}
 
         {legend && (
           <div className="absolute top-[3.6rem] sm:top-12 right-3 z-[650] w-[min(300px,calc(100%-1.5rem))] max-h-[calc(100%-5rem)] overflow-y-auto bg-parchment border rule p-5 shadow-[0_20px_50px_-25px_rgba(0,0,0,.5)] text-[12.5px] leading-relaxed space-y-3">
@@ -252,11 +313,11 @@ export function AtlasExplorer({
             <p><span className="inline-block w-5 align-middle mr-1.5 border-t-2 border-dashed border-gold" />Trade routes join attested places; the lines between them are simplified.</p>
             <p><span className="inline-block w-5 align-middle mr-1.5 border-t-2 border-dotted border-sage-deep" />Migration arrows are modelled ancestry flows from ancient DNA, not paths walked.</p>
             <p><span className="inline-block w-2.5 h-2.5 rounded-full border border-dashed border-terracotta align-middle mr-1.5" />A dashed ring marks an approximate location.</p>
-            <p className="text-stone">Click any point, line or territory to learn more. Double-click a filter to show only that layer.</p>
+            <p className="text-stone">Click any point, line or territory to learn more. Themes are starting points: open Layers to add or remove anything, or press Only to see a single layer.</p>
           </div>
         )}
 
-        {theme === "political" && shown.length > 0 && !selected && (
+        {boundaries && theme !== "religion" && shown.length > 0 && !selected && (
           <div className={`absolute left-3 bottom-7 sm:bottom-3 z-[500] w-[min(260px,calc(100%-1.5rem))] bg-parchment/[0.97] border rule shadow-[0_16px_40px_-24px_rgba(0,0,0,.5)] ${listOpen ? "max-h-[60%]" : ""} flex flex-col`}>
             <button onClick={() => setListOpen((o) => !o)} aria-expanded={listOpen} className="flex items-center justify-between px-4 py-2.5 text-left">
               <span className="eyebrow">Polities in {formatYear(year)} · {shownPolities}</span>
@@ -300,7 +361,7 @@ export function AtlasExplorer({
           </div>
         )}
 
-        {coast && !selected && (theme === "landscape" || theme === "political") && (
+        {coast && !selected && !panel && (
           <SeaPanel year={year} allTime={allTime} />
         )}
 
@@ -517,22 +578,126 @@ function SheetChrome({ onClose }: { onClose: () => void }) {
   );
 }
 
-function ToolButton({ on, onClick, label, title, children }: { on: boolean; onClick: () => void; label: string; title: string; children: React.ReactNode }) {
+function ActiveChip({ label, count, onRemove, children }: { label: string; count?: number; onRemove: () => void; children?: React.ReactNode }) {
   return (
     <button
-      onClick={onClick}
-      aria-pressed={on}
-      aria-label={label}
-      title={title}
-      className={`h-9 sm:h-8 w-9 md:w-auto md:px-3 inline-flex items-center justify-center gap-1.5 border text-[12px] shadow-[0_6px_20px_-12px_rgba(0,0,0,.45)] transition-colors ${
-        on ? "bg-ink text-parchment border-ink" : "bg-ivory/95 border-ink/10 text-ink hover:bg-ivory"
-      }`}
+      onClick={onRemove}
+      title={`Hide ${label.toLowerCase()}`}
+      aria-label={`Hide ${label}${count !== undefined ? `, ${count} shown` : ""}`}
+      className={`group pointer-events-auto shrink-0 inline-flex items-center gap-1.5 h-8 pl-2 pr-1.5 text-[12px] bg-ivory border border-ink/15 text-ink shadow-[0_6px_20px_-12px_rgba(0,0,0,.45)] hover:border-ink/40 transition-colors ${count === 0 ? "text-stone" : ""}`}
     >
-      <svg viewBox="0 0 24 24" className="w-4 h-4 shrink-0" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" aria-hidden>
-        {children}
+      {children}
+      {label}
+      {count !== undefined && <span className="data text-[11px] tabular-nums text-stone">{count}</span>}
+      <svg viewBox="0 0 24 24" className="w-3.5 h-3.5 text-stone group-hover:text-terracotta" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" aria-hidden>
+        <path d="m7 7 10 10M17 7 7 17" />
       </svg>
-      <span className="hidden md:inline">{label}</span>
     </button>
+  );
+}
+
+type BaseOption = { id: string; label: string; note: string; on: boolean; toggle: () => void };
+
+function LayersPanel({
+  ref,
+  theme,
+  year,
+  layers,
+  counts,
+  onToggle,
+  onSolo,
+  onReset,
+  onClear,
+  onClose,
+  onKey,
+  base,
+}: {
+  ref: React.Ref<HTMLDivElement>;
+  theme: { label: string };
+  year: number | null;
+  layers: Set<MapLayer>;
+  counts: Partial<Record<MapLayer, number>>;
+  onToggle: (l: MapLayer) => void;
+  onSolo: (l: MapLayer) => void;
+  onReset: () => void;
+  onClear: () => void;
+  onClose: () => void;
+  onKey: () => void;
+  base: BaseOption[];
+}) {
+  return (
+    <div
+      ref={ref}
+      id="atlas-layers"
+      role="dialog"
+      aria-label="Map layers"
+      className="absolute z-[720] inset-x-0 bottom-0 max-h-[80%] sm:inset-x-auto sm:bottom-auto sm:top-14 sm:right-3 sm:w-[340px] sm:max-h-[calc(100%-4.5rem)] flex flex-col bg-parchment border-t sm:border rule rounded-t-2xl sm:rounded-none shadow-[0_-18px_50px_-24px_rgba(0,0,0,.55)] sm:shadow-[0_24px_60px_-28px_rgba(0,0,0,.55)]"
+    >
+      <div className="flex items-baseline justify-between gap-3 px-5 pt-4 pb-3 border-b rule">
+        <h2 className="font-display text-[1.45rem] leading-none">Layers</h2>
+        <span className="data text-[11px] text-stone">{year === null ? "all periods" : `counts for ${formatYear(year)}`}</span>
+        <button onClick={onClose} aria-label="Close layers" className="ml-auto -mr-1 w-8 h-8 inline-flex items-center justify-center text-stone hover:text-ink">
+          <svg viewBox="0 0 24 24" className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" aria-hidden><path d="m6 6 12 12M18 6 6 18" /></svg>
+        </button>
+      </div>
+
+      <div className="overflow-y-auto overscroll-contain px-5 pb-2">
+        {GROUPS.map((g) => (
+          <fieldset key={g.label} className="pt-4">
+            <legend className="data text-[11px] uppercase tracking-[0.14em] text-stone">{g.label}</legend>
+            <ul className="mt-1">
+              {g.layers.map((l) => {
+                const on = layers.has(l);
+                const n = counts[l] ?? 0;
+                return (
+                  <li key={l} className="group flex items-center">
+                    <button role="checkbox" aria-checked={on} onClick={() => onToggle(l)} className="min-w-0 flex-1 flex items-center gap-2.5 py-2 text-left">
+                      <span className={`shrink-0 w-4 h-4 border inline-flex items-center justify-center transition-colors ${on ? "bg-ink border-ink text-parchment" : "border-ink/30 group-hover:border-ink/60"}`} aria-hidden>
+                        {on && <svg viewBox="0 0 24 24" className="w-3 h-3" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><path d="m5 12.5 4.5 4.5L19 7.5" /></svg>}
+                      </span>
+                      <Swatch layer={l} on />
+                      <span className={`min-w-0 flex-1 text-[13.5px] ${on ? "text-ink" : "text-ink/75"}`}>{LAYER_META[l].label}</span>
+                      <span className={`data text-[11px] tabular-nums ${n === 0 ? "text-stone-light" : "text-stone"}`}>{l === "polity" && !on ? "" : n}</span>
+                    </button>
+                    <button onClick={() => onSolo(l)} title={`Show only ${LAYER_META[l].label.toLowerCase()}`} aria-label={`Show only ${LAYER_META[l].label}`} className="ml-2 data text-[11px] px-1.5 py-0.5 text-stone opacity-100 sm:opacity-0 sm:group-hover:opacity-100 focus-visible:opacity-100 hover:text-terracotta">
+                      only
+                    </button>
+                  </li>
+                );
+              })}
+            </ul>
+          </fieldset>
+        ))}
+        <fieldset className="pt-4 mt-2 border-t rule">
+          <legend className="data text-[11px] uppercase tracking-[0.14em] text-stone">Base map</legend>
+          <ul className="mt-1.5">
+            {base.map((o) => (
+              <li key={o.id}>
+                <button role="switch" aria-checked={o.on} onClick={o.toggle} className="w-full flex items-center gap-3 py-2 text-left group">
+                  <span className="min-w-0 flex-1">
+                    <span className="block text-[13.5px] text-ink">{o.label}</span>
+                    <span className="block text-[11.5px] text-stone leading-snug">{o.note}</span>
+                  </span>
+                  <span className={`relative shrink-0 w-8 h-[18px] rounded-full transition-colors ${o.on ? "bg-ink" : "bg-ink/15 group-hover:bg-ink/25"}`} aria-hidden>
+                    <span className={`absolute top-[3px] w-3 h-3 rounded-full bg-parchment transition-[left] duration-200 ${o.on ? "left-[17px]" : "left-[3px]"}`} />
+                  </span>
+                </button>
+              </li>
+            ))}
+          </ul>
+        </fieldset>
+
+      </div>
+
+      <div className="flex items-center gap-2 px-5 py-3 border-t rule">
+        <button onClick={onReset} className="text-[12.5px] text-terracotta hover:underline underline-offset-4">Reset to {theme.label}</button>
+        <span className="text-stone-light" aria-hidden>·</span>
+        <button onClick={onClear} className="text-[12.5px] text-stone hover:text-ink">Clear all</button>
+        <span className="sm:hidden text-stone-light" aria-hidden>·</span>
+        <button onClick={onKey} className="sm:hidden text-[12.5px] text-stone hover:text-ink">Map key</button>
+        <button onClick={onClose} className="ml-auto h-8 px-4 bg-ink text-parchment text-[12.5px] font-medium hover:bg-ink/90">Done</button>
+      </div>
+    </div>
   );
 }
 
